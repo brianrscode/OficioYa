@@ -1,11 +1,16 @@
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    # urls de usuarios
+    path('api/usuarios/', include('apps.usuarios.urls')),
+    path('api/ubicacion/', include('apps.ubicacion.urls')),
+
     # your patterns -> tus urls
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     # opcional
