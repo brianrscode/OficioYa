@@ -19,7 +19,7 @@ class UsuarioAdmin(UserAdmin):
     # Campos para el formulario de creación
     add_fieldsets = UserAdmin.add_fieldsets + (
         ('Información Personal', {
-            'fields': ('nombres', 'apellido_paterno', 'apellido_materno', 'foto', 'sexo', 'fecha_nacimiento', 'ciudad', 'rol')
+            'fields': ('nombres', 'apellido_paterno', 'apellido_materno', 'email', 'foto', 'sexo', 'fecha_nacimiento', 'ciudad', 'rol')
         }),
     )
 

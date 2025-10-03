@@ -9,11 +9,12 @@ class Usuario(AbstractUser):
     nombres = models.CharField(max_length=20)
     apellido_paterno = models.CharField(max_length=20)
     apellido_materno = models.CharField(max_length=20, blank=True, null=True)
+    email = models.EmailField(unique=True)
     foto = models.ImageField(upload_to='usuarios/fotos/', blank=True, null=True)
     sexo = models.CharField(max_length=10, blank=True, null=True)
     fecha_nacimiento = models.DateField(blank=True, null=True)
     ciudad = models.ForeignKey(Ciudad, on_delete=models.SET_NULL, null=True, blank=True)
-    rol = models.CharField(max_length=20, choices=[('contratante', 'Contratante'), ('prestador', 'Prestador')])
+    rol = models.CharField(max_length=20, choices=[('contratante', 'Contratante'), ('prestador', 'Prestador')], default='contratante')
 
     def __str__(self):
         return f"{self.username} ({self.rol})"
