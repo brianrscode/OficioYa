@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import Usuario
+from apps.servicios.models import Servicio, PrestadorServicios
 
 
 Usuario = get_user_model()
@@ -19,14 +20,23 @@ class UsuarioSerializer(serializers.ModelSerializer):
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, min_length=8)
+    servicios = serializers.ListField(
+        child=serializers.IntegerField(),
+        required=False,
+        write_only=True
+    )
 
     class Meta:
         model = Usuario
-        fields = ['username', 'email', 'password', 'nombres', 'apellido_paterno',
-                  'apellido_materno', 'foto', 'sexo', 'fecha_nacimiento',
-                  'ciudad', 'rol']
+        fields = [
+            'username', 'email', 'password',
+            'nombres', 'apellido_paterno', 'apellido_materno',
+            'foto', 'sexo', 'fecha_nacimiento', 'ciudad', 'rol',
+            'servicios'
+        ]
 
     def create(self, validated_data):
+        servicios = validated_data.pop('servicios', [])
         user = Usuario.objects.create_user(
             username=validated_data['username'],
             email=validated_data['email'],
@@ -37,9 +47,19 @@ class RegisterSerializer(serializers.ModelSerializer):
             foto=validated_data.get('foto', None),
             sexo=validated_data.get('sexo', ''),
             fecha_nacimiento=validated_data.get('fecha_nacimiento', None),
-            ciudad=validated_data.get('ciudad', ''),
-            rol=validated_data.get('rol', 'contratante')  # valor por defecto
+            ciudad=validated_data.get('ciudad', None),
+            rol=validated_data.get('rol', 'contratante')
         )
+
+        # Si el usuario es prestador, registrar servicios
+        if user.rol == 'prestador' and servicios:
+            for servicio_id in servicios:
+                try:
+                    servicio = Servicio.objects.get(id=servicio_id)
+                    PrestadorServicios.objects.create(usuario=user, servicio=servicio)
+                except Servicio.DoesNotExist:
+                    continue
+
         return user
 
 
