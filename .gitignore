@@ -202,3 +202,10 @@ package-lock.json
 yarn.lock
 Pipfile.lock
 poetry.lock
+
+# ============================================================
+# 🚫 EXCEPCIONES (para evitar conflictos entre frontend y backend)
+# ============================================================
+
+# No ignorar la carpeta lib de React Native
+!/frontend/lib/
