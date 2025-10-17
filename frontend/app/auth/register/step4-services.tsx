@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, FlatList, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, FlatList, StyleSheet, ActivityIndicator } from "react-native";
 import { useRegistro } from "@/context/RegisterContext";
 import { router } from "expo-router";
 
@@ -7,12 +7,25 @@ export default function Step4Services() {
   const { registro, setRegistro } = useRegistro();
   const [servicios, setServicios] = useState([]);
   const [seleccionados, setSeleccionados] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Cambia la URL base según tu backend
+  const API_URL = "http://127.0.0.1:8000/api/servicios/servicios/";
 
   useEffect(() => {
-    fetch("https://tu-backend/api/servicios/")
-      .then((res) => res.json())
-      .then((data) => setServicios(data))
-      .catch((err) => console.error("Error al obtener servicios:", err));
+    const obtenerServicios = async () => {
+      try {
+        const res = await fetch(API_URL);
+        const data = await res.json();
+        setServicios(data);
+      } catch (error) {
+        console.error("Error al obtener servicios:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    obtenerServicios();
   }, []);
 
   const toggleSeleccion = (id: number) => {
@@ -27,6 +40,15 @@ export default function Step4Services() {
     setRegistro({ ...registro, servicios: seleccionados });
     router.push("/auth/register/summary");
   };
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#007AFF" />
+        <Text>Cargando servicios...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -48,7 +70,11 @@ export default function Step4Services() {
         )}
       />
 
-      <TouchableOpacity style={styles.button} onPress={handleContinuar}>
+      <TouchableOpacity
+        style={[styles.button, seleccionados.length === 0 && { opacity: 0.6 }]}
+        disabled={seleccionados.length === 0}
+        onPress={handleContinuar}
+      >
         <Text style={styles.buttonText}>Continuar</Text>
       </TouchableOpacity>
     </View>
@@ -56,8 +82,23 @@ export default function Step4Services() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, backgroundColor: "#fff" },
-  title: { fontSize: 24, fontWeight: "bold", marginBottom: 20 },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
+  },
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: "#fff",
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 20,
+    textAlign: "center",
+  },
   item: {
     padding: 15,
     borderWidth: 1,

@@ -5,32 +5,36 @@ import { router } from "expo-router";
 export default function Summary() {
   const { registro } = useRegistro();
 
+  // Cambia esta URL base según tu backend
+  const API_URL = "http://127.0.0.1:8000/api/usuarios/register/";
+
   const handleEnviar = async () => {
     try {
-      const response = await fetch("https://tu-backend/api/usuarios/registro/", {
+      const res = await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(registro),
       });
 
-      if (!response.ok) throw new Error("Error al registrar usuario");
+      if (!res.ok) throw new Error("Error al registrar usuario");
       Alert.alert("Éxito", "Tu cuenta ha sido creada correctamente");
       router.replace("/auth/login");
     } catch (error) {
-      Alert.alert("Error", "No se pudo completar el registro");
       console.error(error);
+      Alert.alert("Error", "No se pudo completar el registro");
     }
   };
 
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.title}>Revisa tu información</Text>
+
       <Text style={styles.section}>Cuenta</Text>
-      <Text>Username: {registro.username}</Text>
+      <Text>Usuario: {registro.username}</Text>
       <Text>Email: {registro.email}</Text>
 
       <Text style={styles.section}>Datos personales</Text>
-      <Text>Nombre: {registro.nombres} {registro.apellido_paterno} {registro.apellido_materno}</Text>
+      <Text>{registro.nombres} {registro.apellido_paterno} {registro.apellido_materno}</Text>
       <Text>Sexo: {registro.sexo}</Text>
       <Text>Fecha de nacimiento: {registro.fecha_nacimiento}</Text>
       <Text>Ciudad: {registro.ciudad}</Text>

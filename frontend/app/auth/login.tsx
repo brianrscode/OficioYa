@@ -34,7 +34,7 @@ export default function LoginScreen() {
         <Text style={styles.buttonText}>Entrar</Text>
       </TouchableOpacity>
 
-      <Link href="register" style={styles.link}>
+      <Link href="auth/register/step1-account" style={styles.link}>
         ¿No tienes cuenta? Regístrate
       </Link>
     </View>
