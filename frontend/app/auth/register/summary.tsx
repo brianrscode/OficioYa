@@ -1,12 +1,37 @@
-import { Text, TouchableOpacity, ScrollView, StyleSheet, Alert } from "react-native";
+import { useEffect, useState } from "react";
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Alert, ActivityIndicator } from "react-native";
 import { useRegistro } from "@/context/RegisterContext";
 import { router } from "expo-router";
 
 export default function Summary() {
   const { registro } = useRegistro();
+  const [nombresServicios, setNombresServicios] = useState([]);
+  const [loadingServicios, setLoadingServicios] = useState(true);
 
-  // Cambia esta URL base según tu backend
   const API_URL = "http://127.0.0.1:8000/api/usuarios/register/";
+  const API_SERVICIOS = "http://127.0.0.1:8000/api/servicios/servicios/";
+
+  // Cargar los nombres de los servicios seleccionados
+  useEffect(() => {
+    const cargarServicios = async () => {
+      if (registro.rol !== "prestador" || !registro.servicios.length) {
+        setLoadingServicios(false);
+        return;
+      }
+      try {
+        const res = await fetch(API_SERVICIOS);
+        const data = await res.json();
+        const filtrados = data.filter((s) => registro.servicios.includes(s.id));
+        setNombresServicios(filtrados.map((s) => s.nombre));
+      } catch (error) {
+        console.error("Error al obtener servicios:", error);
+      } finally {
+        setLoadingServicios(false);
+      }
+    };
+
+    cargarServicios();
+  }, []);
 
   const handleEnviar = async () => {
     try {
@@ -37,7 +62,7 @@ export default function Summary() {
       <Text>{registro.nombres} {registro.apellido_paterno} {registro.apellido_materno}</Text>
       <Text>Sexo: {registro.sexo}</Text>
       <Text>Fecha de nacimiento: {registro.fecha_nacimiento}</Text>
-      <Text>Ciudad: {registro.ciudad}</Text>
+      <Text>Ciudad (ID): {registro.ciudad}</Text>
 
       <Text style={styles.section}>Rol</Text>
       <Text>{registro.rol}</Text>
@@ -45,7 +70,11 @@ export default function Summary() {
       {registro.rol === "prestador" && (
         <>
           <Text style={styles.section}>Servicios seleccionados</Text>
-          <Text>{registro.servicios.join(", ")}</Text>
+          {loadingServicios ? (
+            <ActivityIndicator size="small" color="#007AFF" />
+          ) : (
+            <Text>{nombresServicios.join(", ") || "Sin servicios"}</Text>
+          )}
         </>
       )}
 
