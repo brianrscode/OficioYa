@@ -14,6 +14,7 @@ export function RegisterProvider({ children }: { children: React.ReactNode }) {
     sexo: "",
     fecha_nacimiento: "",
     ciudad: "",
+    ciudad_nombre: "",
     rol: "contratante",
     servicios: [],
   });

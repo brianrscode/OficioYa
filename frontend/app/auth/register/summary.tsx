@@ -5,13 +5,13 @@ import { router } from "expo-router";
 
 export default function Summary() {
   const { registro } = useRegistro();
-  const [nombresServicios, setNombresServicios] = useState([]);
+  const [nombresServicios, setNombresServicios] = useState<string[]>([]);
   const [loadingServicios, setLoadingServicios] = useState(true);
 
   const API_URL = "http://127.0.0.1:8000/api/usuarios/register/";
   const API_SERVICIOS = "http://127.0.0.1:8000/api/servicios/servicios/";
 
-  // Cargar los nombres de los servicios seleccionados
+  // Cargar nombres de servicios para mostrar en resumen
   useEffect(() => {
     const cargarServicios = async () => {
       if (registro.rol !== "prestador" || !registro.servicios.length) {
@@ -20,16 +20,16 @@ export default function Summary() {
       }
       try {
         const res = await fetch(API_SERVICIOS);
-        const data = await res.json();
+        const data: Array<{id:number; nombre:string}> = await res.json();
         const filtrados = data.filter((s) => registro.servicios.includes(s.id));
         setNombresServicios(filtrados.map((s) => s.nombre));
+        console.log("contexto", registro);
       } catch (error) {
         console.error("Error al obtener servicios:", error);
       } finally {
         setLoadingServicios(false);
       }
     };
-
     cargarServicios();
   }, []);
 
@@ -38,7 +38,7 @@ export default function Summary() {
       const res = await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(registro),
+        body: JSON.stringify(registro), // ← Aquí se envía el ID de ciudad (registro.ciudad) y los IDs de servicios
       });
 
       if (!res.ok) throw new Error("Error al registrar usuario");
@@ -62,7 +62,7 @@ export default function Summary() {
       <Text>{registro.nombres} {registro.apellido_paterno} {registro.apellido_materno}</Text>
       <Text>Sexo: {registro.sexo}</Text>
       <Text>Fecha de nacimiento: {registro.fecha_nacimiento}</Text>
-      <Text>Ciudad (ID): {registro.ciudad}</Text>
+      <Text>Ciudad: {registro.ciudad_nombre || "—"}</Text> {/* ← Nombre legible */}
 
       <Text style={styles.section}>Rol</Text>
       <Text>{registro.rol}</Text>
@@ -71,7 +71,7 @@ export default function Summary() {
         <>
           <Text style={styles.section}>Servicios seleccionados</Text>
           {loadingServicios ? (
-            <ActivityIndicator size="small" color="#007AFF" />
+            <ActivityIndicator size="small" />
           ) : (
             <Text>{nombresServicios.join(", ") || "Sin servicios"}</Text>
           )}
@@ -90,11 +90,7 @@ const styles = StyleSheet.create({
   title: { fontSize: 26, fontWeight: "bold", marginBottom: 20, textAlign: "center" },
   section: { marginTop: 15, fontSize: 18, fontWeight: "bold", color: "#007AFF" },
   button: {
-    backgroundColor: "#007AFF",
-    padding: 15,
-    borderRadius: 10,
-    alignItems: "center",
-    marginTop: 30,
+    backgroundColor: "#007AFF", padding: 15, borderRadius: 10, alignItems: "center", marginTop: 30,
   },
   buttonText: { color: "#fff", fontWeight: "bold" },
 });

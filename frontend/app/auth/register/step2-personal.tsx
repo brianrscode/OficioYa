@@ -6,7 +6,7 @@ import { router } from "expo-router";
 
 export default function Step2Personal() {
   const { registro, setRegistro } = useRegistro();
-  const [ciudades, setCiudades] = useState([]);
+  const [ciudades, setCiudades] = useState<Array<{id:number; nombre:string}>>([]);
   const [loading, setLoading] = useState(true);
 
   const API_CIUDADES = "http://127.0.0.1:8000/api/ubicacion/ciudades/";
@@ -16,6 +16,7 @@ export default function Step2Personal() {
       try {
         const res = await fetch(API_CIUDADES);
         const data = await res.json();
+        console.log("Ciudades:", data);  // ← Verificar que los datos se carguen correctamente ------------------
         setCiudades(data);
       } catch (error) {
         console.error("Error al cargar ciudades:", error);
@@ -29,11 +30,23 @@ export default function Step2Personal() {
   if (loading) {
     return (
       <View style={styles.loading}>
-        <ActivityIndicator size="large" color="#007AFF" />
+        <ActivityIndicator size="large" />
         <Text>Cargando ciudades...</Text>
       </View>
     );
   }
+
+  const handleCiudadChange = (valor: number | string, index: number) => {
+    // index 0 es el placeholder
+    let nombre = "";
+    let id: number | "" = "";
+    if (index > 0) {
+      id = typeof valor === "string" ? parseInt(valor, 10) : valor;
+      const found = ciudades.find((c) => c.id === id);
+      nombre = found?.nombre ?? "";
+    }
+    setRegistro({ ...registro, ciudad: id, ciudad_nombre: nombre });
+  };
 
   return (
     <View style={styles.container}>
@@ -78,7 +91,7 @@ export default function Step2Personal() {
       <View style={styles.pickerContainer}>
         <Picker
           selectedValue={registro.ciudad}
-          onValueChange={(valor) => setRegistro({ ...registro, ciudad: valor })}
+          onValueChange={handleCiudadChange}
         >
           <Picker.Item label="Selecciona una ciudad..." value="" />
           {ciudades.map((c) => (
@@ -95,26 +108,15 @@ export default function Step2Personal() {
 }
 
 const styles = StyleSheet.create({
-  loading: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
+  loading: { flex: 1, justifyContent: "center", alignItems: "center" },
   container: { flex: 1, padding: 20, backgroundColor: "#fff" },
   title: { fontSize: 24, fontWeight: "bold", marginBottom: 20, textAlign: "center" },
   label: { marginBottom: 5, fontWeight: "600" },
   input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 10,
-    padding: 12,
-    marginBottom: 15,
+    borderWidth: 1, borderColor: "#ccc", borderRadius: 10, padding: 12, marginBottom: 15,
   },
   pickerContainer: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 10,
-    marginBottom: 15,
+    borderWidth: 1, borderColor: "#ccc", borderRadius: 10, marginBottom: 15,
   },
   button: { backgroundColor: "#007AFF", padding: 15, borderRadius: 10, alignItems: "center" },
   buttonText: { color: "#fff", fontWeight: "bold" },
