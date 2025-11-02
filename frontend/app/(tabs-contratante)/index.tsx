@@ -1,10 +1,10 @@
 import { View, Text, StyleSheet } from "react-native";
 
-export default function ServiciosScreen() {
+export default function HomeScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Servicios disponibles</Text>
-      <Text>Aquí podrás buscar, filtrar o publicar servicios.</Text>
+      <Text style={styles.title}>Bienvenido a OficioYa</Text>
+      <Text>Explora servicios o gestiona tu perfil desde las pestañas abajo como un CONTRATANTE.</Text>
     </View>
   );
 }

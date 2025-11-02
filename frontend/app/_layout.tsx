@@ -23,12 +23,14 @@ function RootNavigation() {
     );
   }
 
-  // Si hay usuario logueado entonces va al index
-  if (user) {
-    return <Redirect href="/(tabs)" />;
-  }
+  // No autenticado → ir al login
+  if (!user) return <Redirect href="/auth/login" />;
 
-  // Si no hay usuario entonces va al login
+  // Autenticado → redirigir según rol
+  if (user.rol === "prestador") return <Redirect href="/(tabs-prestador)" />;
+  if (user.rol === "contratante") return <Redirect href="/(tabs-contratante)" />;
+
+  // Rol desconocido → fallback
   return <Redirect href="/auth/login" />;
 }
 
@@ -36,8 +38,9 @@ export default function RootLayout() {
   return (
     <AuthProvider>
       <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="(tabs)" />
         <Stack.Screen name="auth" />
+        <Stack.Screen name="(tabs-contratante)" />
+        <Stack.Screen name="(tabs-prestador)" />
       </Stack>
       <RootNavigation />
     </AuthProvider>

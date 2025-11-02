@@ -4,40 +4,32 @@ import { useAuth } from "@/context/AuthContext";
 import { View, ActivityIndicator } from "react-native";
 import { useEffect, useState } from "react";
 
-export default function TabsLayout() {
+export default function TabsPrestadorLayout() {
   const { user, accessToken, checkSession } = useAuth();
   const [loading, setLoading] = useState(true);
 
-  // Verificar sesión antes de renderizar las tabs
   useEffect(() => {
-    const validarSesion = async () => {
+    const validar = async () => {
       await checkSession();
       setLoading(false);
     };
-    validarSesion();
+    validar();
   }, []);
 
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color="#007AFF" />
+        <ActivityIndicator size="large" />
       </View>
     );
   }
 
-  // Si no hay usuario o token → redirigir al login
-  if (!user || !accessToken) {
+  if (!user || !accessToken || user.rol !== "prestador") {
     return <Redirect href="/auth/login" />;
   }
 
-  // Si hay sesión válida → mostrar las tabs
   return (
-    <Tabs
-      screenOptions={{
-        headerShown: false,
-        tabBarActiveTintColor: "#007AFF",
-      }}
-    >
+    <Tabs screenOptions={{ headerShown: false, tabBarActiveTintColor: "#007AFF" }}>
       <Tabs.Screen
         name="index"
         options={{
@@ -48,9 +40,9 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
-        name="servicios"
+        name="mis-servicios"
         options={{
-          title: "Servicios",
+          title: "Mis Servicios",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="construct-outline" size={size} color={color} />
           ),

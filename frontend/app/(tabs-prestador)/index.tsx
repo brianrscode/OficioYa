@@ -4,7 +4,7 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Bienvenido a OficioYa</Text>
-      <Text>Explora servicios o gestiona tu perfil desde las pestañas abajo.</Text>
+      <Text>Añade servicios o gestiona tu perfil desde las pestañas abajo como un PRESTADOR.</Text>
     </View>
   );
 }
