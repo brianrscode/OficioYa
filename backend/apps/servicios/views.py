@@ -22,7 +22,7 @@ from .services.strategies.strategy_rating import StrategyRating
 
 class BuscarPrestadoresView(APIView):
     def get(self, request):
-        q = request.query_params.get("q", "")
+        servicio = request.query_params.get("servicio", "")
         ciudad = request.query_params.get("ciudad", "")
         criterio = request.query_params.get("criterio", "rating")
 
@@ -34,18 +34,21 @@ class BuscarPrestadoresView(APIView):
         service = SearchService(strategy)
         queryset = PrestadorServicios.objects.select_related("servicio", "usuario").all()
 
-        if q:
+        if servicio:
             queryset = queryset.filter(
-                Q(servicio__nombre__icontains=q) |
-                Q(usuario__username__icontains=q)
+                Q(servicio__nombre__icontains=servicio) |
+                Q(usuario__username__icontains=servicio)
             )
         if ciudad:
             queryset = queryset.filter(usuario__ciudad__nombre__icontains=ciudad)
 
-        prestadores = service.buscar_prestadores(q, ciudad, queryset)
+        prestadores = service.buscar_prestadores(servicio, ciudad, queryset)
 
         data = [
             {
+                "nombres": p.usuario.nombres,
+                "apellido_paterno": p.usuario.apellido_paterno,
+                "apellido_materno": p.usuario.apellido_materno,
                 "prestador": p.usuario.username,
                 "servicio": p.servicio.nombre,
                 "fecha_registro": p.fecha_registro,
