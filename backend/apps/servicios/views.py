@@ -1,7 +1,12 @@
 from rest_framework import generics
 from .models import Servicio, PrestadorServicios
 from .serializers import ServicioSerializer, PrestadorServiciosSerializer
-
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from django.db.models import Q
+from .services.search_service import SearchService
+from .services.strategies.strategy_ciudad import StrategyCiudad
+from .services.strategies.strategy_rating import StrategyRating
 
 class ServicioListCreateView(generics.ListCreateAPIView):
     queryset = Servicio.objects.all()
@@ -12,13 +17,6 @@ class PrestadorServiciosListCreateView(generics.ListCreateAPIView):
     queryset = PrestadorServicios.objects.all()
     serializer_class = PrestadorServiciosSerializer
 
-
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from django.db.models import Q
-from .services.search_service import SearchService
-from .services.strategies.strategy_ciudad import StrategyCiudad
-from .services.strategies.strategy_rating import StrategyRating
 
 class BuscarPrestadoresView(APIView):
     def get(self, request):
