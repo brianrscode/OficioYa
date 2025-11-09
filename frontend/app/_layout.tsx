@@ -1,4 +1,4 @@
-import { Stack, Redirect } from "expo-router";
+import { Stack, Redirect, usePathname } from "expo-router";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 import { View, ActivityIndicator } from "react-native";
 import { useEffect, useState } from "react";
@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 function RootNavigation() {
   const { user, checkSession } = useAuth();
   const [loading, setLoading] = useState(true);
+  const pathname = usePathname();
 
   useEffect(() => {
     const validar = async () => {
@@ -23,14 +24,25 @@ function RootNavigation() {
     );
   }
 
-  // No autenticado → ir al login
-  if (!user) return <Redirect href="/auth/login" />;
+  const inAuth = pathname?.startsWith("/auth");
 
-  // Autenticado → redirigir según rol
+  // No autenticado → permitir rutas /auth/* sin forzar redirect
+  if (!user) {
+    if (!inAuth) return <Redirect href="/auth/login" />;
+    return null;
+  }
+
+  // Autenticado → si está en /auth/* redirigir según rol
+  if (inAuth) {
+    if (user.rol === "prestador") return <Redirect href="/(tabs-prestador)" />;
+    if (user.rol === "contratante") return <Redirect href="/(tabs-contratante)" />;
+  }
+
+  // Autenticado y fuera de /auth → opcionalmente no redirigir, o redirigir por rol
   if (user.rol === "prestador") return <Redirect href="/(tabs-prestador)" />;
   if (user.rol === "contratante") return <Redirect href="/(tabs-contratante)" />;
 
-  // Rol desconocido → fallback
+  // Rol desconocido → fallback a login
   return <Redirect href="/auth/login" />;
 }
 
