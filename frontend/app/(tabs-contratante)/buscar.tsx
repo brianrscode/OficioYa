@@ -1,0 +1,131 @@
+import { View, TextInput, TouchableOpacity, Text, FlatList, ActivityIndicator, StyleSheet } from "react-native";
+import { useEffect, useMemo, useState } from "react";
+import { useAuth } from "@/context/AuthContext";
+
+export default function BuscarScreen() {
+    // TODO: Implementar búsqueda de servicios
+    const { accessToken } = useAuth();
+    const [servicio, setServicio] = useState("");
+    const [ciudad, setCiudad] = useState("");
+    const [criterio, setCriterio] = useState<"rating" | "ciudad">("rating");
+    const [results, setResults] = useState<any[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
+
+    const endpoint = useMemo(() => {
+        const url = new URL("http://127.0.0.1:8000/api/servicios/buscar/");
+        if (servicio) url.searchParams.set("servicio", servicio);
+        if (ciudad) url.searchParams.set("ciudad", ciudad);
+        if (criterio) url.searchParams.set("criterio", criterio);
+        return url.toString();
+    }, [servicio, ciudad, criterio]);
+
+    const fetchServicios = async () => {
+        try {
+            setLoading(true);
+            setError("");
+            const res = await fetch(endpoint, {
+                headers: {
+                    "Content-Type": "application/json",
+                    ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+                },
+            });
+            if (!res.ok) throw new Error("Error de búsqueda");
+            const data = await res.json();
+            const items = Array.isArray(data) ? data : (data.results ?? []);
+            setResults(items);
+        } catch (e: any) {
+            setError(e?.message || "Error");
+            setResults([]);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchServicios();
+    }, []);
+
+    return (
+        <View style={styles.container}>
+            <View style={styles.filtersRow}>
+                <TextInput
+                    placeholder="Servicio o prestador"
+                    value={servicio}
+                    onChangeText={setServicio}
+                    style={styles.input}
+                    autoCapitalize="none"
+                />
+                <TextInput
+                    placeholder="Ciudad"
+                    value={ciudad}
+                    onChangeText={setCiudad}
+                    style={styles.input}
+                    autoCapitalize="none"
+                />
+                <View style={styles.criterioRow}>
+                    <TouchableOpacity
+                        style={[styles.criterioBtn, criterio === "rating" && styles.criterioBtnActive]}
+                        onPress={() => setCriterio("rating")}
+                    >
+                        <Text style={[styles.criterioText, criterio === "rating" && styles.criterioTextActive]}>Rating</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={[styles.criterioBtn, criterio === "ciudad" && styles.criterioBtnActive]}
+                        onPress={() => setCriterio("ciudad")}
+                    >
+                        <Text style={[styles.criterioText, criterio === "ciudad" && styles.criterioTextActive]}>Ciudad</Text>
+                    </TouchableOpacity>
+                </View>
+                <TouchableOpacity style={styles.button} onPress={fetchServicios} disabled={loading}>
+                    <Text style={styles.buttonText}>{loading ? "Buscando..." : "Buscar"}</Text>
+                </TouchableOpacity>
+            </View>
+
+            {loading && results.length === 0 ? (
+                <ActivityIndicator size="large" style={styles.loader} />
+            ) : null}
+
+            {error ? <Text style={styles.error}>{error}</Text> : null}
+
+            <FlatList
+                data={results}
+                keyExtractor={(_, idx) => String(idx)}
+                contentContainerStyle={styles.list}
+                renderItem={({ item }) => (
+                    <View style={styles.card}>
+                        <Text style={styles.title}>{item.prestador}</Text>
+                        <Text style={styles.subtitle}>{item.servicio}</Text>
+                        <Text style={styles.meta}>{item.ciudad}</Text>
+                        <Text style={styles.meta}>{item.nombres} {item.apellido_paterno} {item.apellido_materno}</Text>
+                    </View>
+                )}
+                ListEmptyComponent={!loading ? <Text style={styles.empty}>Sin resultados</Text> : null}
+            />
+        </View>
+    );
+}
+
+const styles = StyleSheet.create({
+    container: { flex: 1, padding: 16 },
+    filtersRow: { gap: 8 },
+    criterioRow: { flexDirection: "row", gap: 8 },
+    criterioBtn: { flex: 1, padding: 10, borderWidth: 1, borderColor: "#ddd", borderRadius: 8, alignItems: "center" },
+    criterioBtnActive: { backgroundColor: "#007AFF22", borderColor: "#007AFF" },
+    criterioText: { color: "#333" },
+    criterioTextActive: { color: "#007AFF", fontWeight: "600" },
+    input: { borderWidth: 1, borderColor: "#ddd", borderRadius: 8, padding: 10 },
+    button: { backgroundColor: "#007AFF", padding: 12, borderRadius: 8, alignItems: "center" },
+    buttonText: { color: "white", fontWeight: "600" },
+    loader: { marginTop: 24 },
+    error: { color: "#c00", marginVertical: 8 },
+    list: { paddingVertical: 12, gap: 8 },
+    card: { padding: 12, borderWidth: 1, borderColor: "#eee", borderRadius: 10, marginBottom: 8 },
+    title: { fontSize: 16, fontWeight: "600", marginBottom: 4 },
+    subtitle: { color: "#555", marginBottom: 4 },
+    meta: { color: "#333" },
+    empty: { textAlign: "center", marginTop: 24, color: "#666" },
+});
+
+
+

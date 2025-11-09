@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 
 export default function LoginScreen() {
-  const { login } = useAuth();
+  const { login, user } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -12,7 +12,13 @@ export default function LoginScreen() {
     try {
       await login(username, password);
       Alert.alert("Bienvenido", "Inicio de sesión correcto");
-      router.replace("/(tabs)");
+      if (user?.rol === "prestador") {
+        router.replace("/(tabs-prestador)");
+      } else if (user?.rol === "contratante") {
+        router.replace("/(tabs-contratante)");
+      } else {
+        router.replace("/auth/login");
+      }
     } catch (error) {
       Alert.alert("Error", "Usuario o contraseña incorrectos");
     }

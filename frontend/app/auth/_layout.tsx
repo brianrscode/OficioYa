@@ -22,6 +22,12 @@ export default function AuthLayout() {
     );
   }
 
-  // Ya logueado → evitar volver al login o registro
-  return <Redirect href="/(tabs)" />;
+  // Ya logueado → redirigir según rol
+  if (user?.rol === "prestador") {
+    return <Redirect href="/(tabs-prestador)" />;
+  }
+  if (user?.rol === "contratante") {
+    return <Redirect href="/(tabs-contratante)" />;
+  }
+  return <Redirect href="/auth/login" />;
 }
