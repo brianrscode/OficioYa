@@ -50,7 +50,7 @@ export default function BuscarScreen() {
         <View style={styles.container}>
             <View style={styles.filtersRow}>
                 <TextInput
-                    placeholder="Servicio o prestador"
+                    placeholder="Servicio"
                     value={servicio}
                     onChangeText={setServicio}
                     style={styles.input}
