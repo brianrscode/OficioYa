@@ -39,7 +39,11 @@
           }
         }
       ],
+<<<<<<< HEAD
       "expo-font"
+=======
+      "expo-web-browser"
+>>>>>>> 4cf59a05cafb8098632006a5c645adac613a41f0
     ],
     "experiments": {
       "typedRoutes": true,
