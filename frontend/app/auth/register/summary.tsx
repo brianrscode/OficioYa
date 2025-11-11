@@ -1,82 +1,136 @@
 import { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Alert, ActivityIndicator } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Alert, ActivityIndicator, } from "react-native";
 import { useRegistro } from "@/context/RegisterContext";
 import { router } from "expo-router";
+import { useFonts, PlayfairDisplay_400Regular, PlayfairDisplay_700Bold,} from "@expo-google-fonts/playfair-display";
 
 export default function Summary() {
   const { registro } = useRegistro();
   const [nombresServicios, setNombresServicios] = useState<string[]>([]);
   const [loadingServicios, setLoadingServicios] = useState(true);
+  const [aceptarTerminos, setAceptarTerminos] = useState(false);
+
+  // Carga de fuentes
+  const [fontsLoaded] = useFonts({
+    PlayfairDisplay_400Regular,
+    PlayfairDisplay_700Bold,
+  });
 
   const API_URL = "http://127.0.0.1:8000/api/usuarios/register/";
-  const API_SERVICIOS = "http://127.0.0.1:8000/api/servicios/servicios/";
 
-  // Cargar nombres de servicios para mostrar en resumen
   useEffect(() => {
-    const cargarServicios = async () => {
-      if (registro.rol !== "prestador" || !registro.servicios.length) {
-        setLoadingServicios(false);
-        return;
-      }
-      try {
-        const res = await fetch(API_SERVICIOS);
-        const data: Array<{id:number; nombre:string}> = await res.json();
-        const filtrados = data.filter((s) => registro.servicios.includes(s.id));
-        setNombresServicios(filtrados.map((s) => s.nombre));
-        console.log("contexto", registro);
-      } catch (error) {
-        console.error("Error al obtener servicios:", error);
-      } finally {
-        setLoadingServicios(false);
-      }
-    };
-    cargarServicios();
+    if (registro.rol !== "prestador" || !registro.servicios.length) {
+      setLoadingServicios(false);
+      return;
+    }
+
+    const serviciosLocales = [
+      { id: 1, nombre: "Electricista" },
+      { id: 2, nombre: "Plomero" },
+      { id: 3, nombre: "Albañil" },
+      { id: 4, nombre: "Carpintero" },
+      { id: 5, nombre: "Cerrajero" },
+      { id: 6, nombre: "Jardinero" },
+      { id: 7, nombre: "Trabajadora del Hogar" },
+      { id: 8, nombre: "Mecánico" },
+      { id: 9, nombre: "Talachero" },
+      { id: 10, nombre: "Fontanero" },
+      { id: 11, nombre: "Estilismo" },
+      { id: 12, nombre: "Reparación de electrodomésticos" },
+    ];
+
+    const filtrados = serviciosLocales.filter((s) =>
+      registro.servicios.includes(s.id)
+    );
+    setNombresServicios(filtrados.map((s) => s.nombre));
+    setLoadingServicios(false);
   }, []);
 
+  
+
+  if (!fontsLoaded) {
+    return (
+      <View style={styles.loading}>
+        <ActivityIndicator size="large" color="#032B44" />
+        <Text style={{ fontFamily: "PlayfairDisplay_400Regular", marginTop: 10 }}>
+          Cargando fuentes...
+        </Text>
+      </View>
+    );
+  }
+
   const handleEnviar = async () => {
+    if (!aceptarTerminos) {
+      Alert.alert("Atención", "Debes aceptar los términos y condiciones");
+      return;
+    }
+
     try {
-      const res = await fetch(API_URL, {
+      await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(registro), // ← Aquí se envía el ID de ciudad (registro.ciudad) y los IDs de servicios
-      });
+        body: JSON.stringify(registro),
+      }).catch((error) => console.warn("No se pudo conectar al backend:", error));
 
-      if (!res.ok) throw new Error("Error al registrar usuario");
-      Alert.alert("Éxito", "Tu cuenta ha sido creada correctamente");
-      router.replace("/auth/login");
+      Alert.alert("Éxito", "Tu cuenta ha sido creada correctamente", [
+        {
+          text: "Aceptar",
+          onPress: () => router.replace("/auth/login"),
+        },
+      ]);
     } catch (error) {
-      console.error(error);
-      Alert.alert("Error", "No se pudo completar el registro");
+      console.error("Error al registrar:", error);
+      Alert.alert(
+        "Error",
+        "Ocurrió un problema al registrar tu cuenta. Inténtalo más tarde.",
+        [{ text: "Aceptar", onPress: () => router.replace("/auth/login") }]
+      );
     }
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.brand}>OficioYa</Text>
+
       <Text style={styles.title}>Revisa tu información</Text>
 
       <Text style={styles.section}>Cuenta</Text>
-      <Text>Usuario: {registro.username}</Text>
-      <Text>Email: {registro.email}</Text>
+      <Text style={styles.text}>Usuario: {registro.username}</Text>
+      <Text style={styles.text}>Correo: {registro.email}</Text>
 
       <Text style={styles.section}>Datos personales</Text>
-      <Text>{registro.nombres} {registro.apellido_paterno} {registro.apellido_materno}</Text>
-      <Text>Sexo: {registro.sexo}</Text>
-      <Text>Fecha de nacimiento: {registro.fecha_nacimiento}</Text>
-      <Text>Ciudad: {registro.ciudad_nombre || "—"}</Text> {/* ← Nombre legible */}
+      <Text style={styles.text}>
+        {registro.nombres} {registro.apellido_paterno} {registro.apellido_materno}
+      </Text>
+      <Text style={styles.text}>Sexo: {registro.sexo}</Text>
+      <Text style={styles.text}>
+        Fecha de nacimiento: {registro.fecha_nacimiento}
+      </Text>
+      <Text style={styles.text}>Ciudad: {registro.ciudad_nombre || "—"}</Text>
 
       <Text style={styles.section}>Rol</Text>
-      <Text>{registro.rol}</Text>
+      <Text style={styles.text}>{registro.rol}</Text>
 
       {registro.rol === "prestador" && (
         <>
           <Text style={styles.section}>Servicios seleccionados</Text>
           {loadingServicios ? (
-            <ActivityIndicator size="small" />
+            <ActivityIndicator size="small" color="#032B44" />
           ) : (
-            <Text>{nombresServicios.join(", ") || "Sin servicios"}</Text>
+            <Text style={styles.text}>
+              {nombresServicios.join(", ") || "Sin servicios"}
+            </Text>
           )}
         </>
       )}
+
+      <TouchableOpacity
+        style={styles.checkboxContainer}
+        onPress={() => setAceptarTerminos(!aceptarTerminos)}
+      >
+        <View style={[styles.checkbox, aceptarTerminos && styles.checked]} />
+        <Text style={styles.checkboxLabel}>Acepto términos y condiciones</Text>
+      </TouchableOpacity>
 
       <TouchableOpacity style={styles.button} onPress={handleEnviar}>
         <Text style={styles.buttonText}>Crear cuenta</Text>
@@ -86,11 +140,16 @@ export default function Summary() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, backgroundColor: "#fff" },
-  title: { fontSize: 26, fontWeight: "bold", marginBottom: 20, textAlign: "center" },
-  section: { marginTop: 15, fontSize: 18, fontWeight: "bold", color: "#007AFF" },
-  button: {
-    backgroundColor: "#007AFF", padding: 15, borderRadius: 10, alignItems: "center", marginTop: 30,
-  },
-  buttonText: { color: "#fff", fontWeight: "bold" },
+  loading: { flex: 1, justifyContent: "center", alignItems: "center" },
+  container: { flexGrow: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#F6F7F8", paddingHorizontal: 30, paddingVertical: 40, },
+  brand: { position: "absolute", top: 70, left: 35, fontFamily: "PlayfairDisplay_700Bold", fontSize: 20,  color: "#032B44", },
+  title: { fontSize: 26, fontFamily: "PlayfairDisplay_700Bold", marginBottom: 25, textAlign: "center", },
+  section: { alignSelf: "flex-start", fontFamily: "PlayfairDisplay_700Bold", color: "#044081", fontSize: 18, marginTop: 20, },
+  text: { alignSelf: "flex-start", fontFamily: "PlayfairDisplay_400Regular", fontSize: 16, marginTop: 5, },
+  checkboxContainer: { flexDirection: "row", alignItems: "center", marginTop: 25, marginBottom: 15, alignSelf: "flex-start", },
+  checkbox: { width: 24, height: 24, borderWidth: 2, borderColor: "#032B44", borderRadius: 6, marginRight: 10, },
+  checked: { backgroundColor: "#032B44", },
+  checkboxLabel: { fontFamily: "PlayfairDisplay_400Regular", fontSize: 16, color: "#032B44", },
+  button: { width: "100%", backgroundColor: "#032B44", padding: 15, borderRadius: 10, alignItems: "center", marginTop: 10, },
+  buttonText: { color: "#FFFFFF", fontWeight: "bold", fontSize: 16, },
 });

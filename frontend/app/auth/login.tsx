@@ -1,12 +1,21 @@
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image } from "react-native";
 import { Link, router } from "expo-router";
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { useFonts, PlayfairDisplay_400Regular, PlayfairDisplay_700Bold } from "@expo-google-fonts/playfair-display";
 
 export default function LoginScreen() {
   const { login, user } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
+  // Cargar las fuentes de Google
+  const [fontsLoaded] = useFonts({
+    PlayfairDisplay_400Regular,
+    PlayfairDisplay_700Bold,
+  });
+
+  if (!fontsLoaded) return null;
 
   const handleLogin = async () => {
     try {
@@ -26,15 +35,22 @@ export default function LoginScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Iniciar sesión</Text>
+      <Image
+        source={require("../../assets/images/Logo_OficioYa.png")} // Asegúrate de que esta ruta sea correcta
+        style={styles.logo}
+      />
 
+      <Text style={styles.title}>Iniciar Sesión</Text>
+
+      <Text style={styles.label}>Username:</Text>
       <TextInput
-        placeholder="Usuario"
+        placeholder="Username"
         style={styles.input}
         value={username}
         onChangeText={setUsername}
       />
 
+      <Text style={styles.label}>Contraseña:</Text>
       <TextInput
         placeholder="Contraseña"
         secureTextEntry
@@ -44,21 +60,28 @@ export default function LoginScreen() {
       />
 
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Entrar</Text>
+        <Text style={styles.buttonText}>Iniciar Sesión</Text>
       </TouchableOpacity>
 
-      <Link href="/auth/register/step1-account" style={styles.link}>
-        ¿No tienes cuenta? Regístrate
+      <Link href="/auth/recover" style={styles.linkSecondary}>
+        Olvidé mi contraseña
+      </Link>
+
+      <Link href="/auth/register/step1-account" style={styles.linkPrimary}>
+        Registrarme
       </Link>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center", padding: 20, backgroundColor: "#fff" },
-  title: { fontSize: 26, fontWeight: "bold", marginBottom: 30, textAlign: "center" },
-  input: { borderWidth: 1, borderColor: "#ccc", borderRadius: 10, padding: 12, marginBottom: 15 },
-  button: { backgroundColor: "#007AFF", padding: 15, borderRadius: 10, alignItems: "center" },
-  buttonText: { color: "#fff", fontWeight: "bold" },
-  link: { marginTop: 20, color: "#007AFF", textAlign: "center" },
+  container: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#F6F7F8", paddingHorizontal: 30, },
+  logo: {width: 120, height: 120, marginBottom: 20, resizeMode: "contain", },
+  title: { fontSize: 28, fontFamily: "PlayfairDisplay_700Bold", marginBottom: 25, },
+  label: {alignSelf: "flex-start", marginLeft: 5, marginBottom: 5, color: "#044081", fontWeight: "600", fontFamily: "PlayfairDisplay_400Regular", },
+  input: {width: "100%", borderWidth: 1, borderColor: "#CFCFCF", borderRadius: 10, padding: 12, marginBottom: 15, backgroundColor: "#FFFFFF", },
+  button: {width: "100%", backgroundColor: "#032B44", padding: 15, borderRadius: 10, alignItems: "center", marginTop: 10, },
+  buttonText: {color: "#FFFFFF", fontWeight: "bold", fontSize: 16, },
+  linkSecondary: {color: "#7A7A7A", marginTop: 15, fontFamily: "PlayfairDisplay_400Regular",},
+  linkPrimary: {color: "#044081", marginTop: 8, fontWeight: "500", fontFamily: "PlayfairDisplay_400Regular", },
 });
