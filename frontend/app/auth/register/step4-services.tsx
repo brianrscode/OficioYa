@@ -1,16 +1,20 @@
 import { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, FlatList, StyleSheet, ActivityIndicator, } from "react-native";
+import { View, Text, TouchableOpacity, FlatList, StyleSheet, ActivityIndicator } from "react-native";
 import { useRegistro } from "@/context/RegisterContext";
 import { router } from "expo-router";
 import { useFonts, PlayfairDisplay_400Regular, PlayfairDisplay_700Bold, } from "@expo-google-fonts/playfair-display";
 
 export default function Step4Services() {
+  const [servicios, setServicios] = useState([]);
+  const [seleccionados, setSeleccionados] = useState([]);
   const { registro, setRegistro } = useRegistro();
-  const [servicios, setServicios] = useState<
-    Array<{ id: number; nombre: string }>
-  >([]);
-  const [seleccionados, setSeleccionados] = useState<number[]>([]);
+  // const [servicios, setServicios] = useState<
+  //   Array<{ id: number; nombre: string }>
+  // >([]);
+  // const [seleccionados, setSeleccionados] = useState<number[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const API_URL = "http://127.0.0.1:8000/api/servicios/servicios/";
 
   const [fontsLoaded] = useFonts({
     PlayfairDisplay_400Regular,
@@ -18,25 +22,19 @@ export default function Step4Services() {
   });
 
   useEffect(() => {
-    const serviciosLocales = [
-      { id: 1, nombre: "Electricista" },
-      { id: 2, nombre: "Plomero" },
-      { id: 3, nombre: "Albañil" },
-      { id: 4, nombre: "Carpintero" },
-      { id: 5, nombre: "Cerrajero" },
-      { id: 6, nombre: "Jardinero" },
-      { id: 7, nombre: "Trabajadora del Hogar" },
-      { id: 8, nombre: "Mecánico" },
-      { id: 9, nombre: "Talachero" },
-      { id: 10, nombre: "Fontanero" },
-      { id: 11, nombre: "Estilismo" },
-      { id: 12, nombre: "Reparación de electrodomésticos" },
-    ];
+    const obtenerServicios = async () => {
+      try {
+        const res = await fetch(API_URL);
+        const data = await res.json();
+        setServicios(data);
+      } catch (error) {
+        console.error("Error al obtener servicios:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    setTimeout(() => {
-      setServicios(serviciosLocales);
-      setLoading(false);
-    }, 800);
+    obtenerServicios();
   }, []);
 
   const toggleSeleccion = (id: number) => {

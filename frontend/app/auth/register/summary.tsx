@@ -17,36 +17,30 @@ export default function Summary() {
   });
 
   const API_URL = "http://127.0.0.1:8000/api/usuarios/register/";
+  const API_SERVICIOS = "http://127.0.0.1:8000/api/servicios/servicios/";
 
   useEffect(() => {
-    if (registro.rol !== "prestador" || !registro.servicios.length) {
-      setLoadingServicios(false);
-      return;
-    }
-
-    const serviciosLocales = [
-      { id: 1, nombre: "Electricista" },
-      { id: 2, nombre: "Plomero" },
-      { id: 3, nombre: "Albañil" },
-      { id: 4, nombre: "Carpintero" },
-      { id: 5, nombre: "Cerrajero" },
-      { id: 6, nombre: "Jardinero" },
-      { id: 7, nombre: "Trabajadora del Hogar" },
-      { id: 8, nombre: "Mecánico" },
-      { id: 9, nombre: "Talachero" },
-      { id: 10, nombre: "Fontanero" },
-      { id: 11, nombre: "Estilismo" },
-      { id: 12, nombre: "Reparación de electrodomésticos" },
-    ];
-
-    const filtrados = serviciosLocales.filter((s) =>
-      registro.servicios.includes(s.id)
-    );
-    setNombresServicios(filtrados.map((s) => s.nombre));
-    setLoadingServicios(false);
+    const cargarServicios = async () => {
+      if (registro.rol !== "prestador" || !registro.servicios.length) {
+        setLoadingServicios(false);
+        return;
+      }
+      try {
+        const res = await fetch(API_SERVICIOS);
+        const data: Array<{id:number; nombre:string}> = await res.json();
+        const filtrados = data.filter((s) => registro.servicios.includes(s.id));
+        setNombresServicios(filtrados.map((s) => s.nombre));
+        console.log("contexto", registro);
+      } catch (error) {
+        console.error("Error al obtener servicios:", error);
+      } finally {
+        setLoadingServicios(false);
+      }
+    };
+    cargarServicios();
   }, []);
 
-  
+
 
   if (!fontsLoaded) {
     return (
@@ -60,31 +54,56 @@ export default function Summary() {
   }
 
   const handleEnviar = async () => {
+    console.log("Datos enviados:\n", registro);
     if (!aceptarTerminos) {
       Alert.alert("Atención", "Debes aceptar los términos y condiciones");
       return;
     }
 
+    // Construir payload solo con campos aceptados por el backend
+    const payload: any = {
+      username: registro.username,
+      email: registro.email,
+      password: registro.password,
+      nombres: registro.nombres,
+      apellido_paterno: registro.apellido_paterno,
+      apellido_materno: registro.apellido_materno || null,
+      foto: null,
+      sexo: registro.sexo || null,
+      fecha_nacimiento: registro.fecha_nacimiento || null,
+      ciudad: registro.ciudad || null,
+      rol: registro.rol || 'contratante',
+    };
+
+    if (registro.rol === 'prestador') {
+      payload.servicios = Array.isArray(registro.servicios) ? registro.servicios : [];
+    }
+
     try {
-      await fetch(API_URL, {
+      const res = await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(registro),
-      }).catch((error) => console.warn("No se pudo conectar al backend:", error));
+        body: JSON.stringify(payload),
+      });
 
-      Alert.alert("Éxito", "Tu cuenta ha sido creada correctamente", [
-        {
-          text: "Aceptar",
-          onPress: () => router.replace("/auth/login"),
-        },
-      ]);
+      if (!res.ok) {
+        let detail: any = null;
+        try { detail = await res.json(); } catch {}
+        console.error("Registro fallido", res.status, detail);
+        const mensajes = detail && typeof detail === 'object'
+          ? Object.entries(detail)
+              .map(([k, v]) => `${k}: ${Array.isArray(v) ? v.join(', ') : v}`)
+              .join("\n")
+          : "No se pudo registrar. Verifica tus datos.";
+        Alert.alert("Error", mensajes);
+        return;
+      }
+
+      Alert.alert("Éxito", "Tu cuenta ha sido creada correctamente");
+      router.replace("/auth/login");
     } catch (error) {
-      console.error("Error al registrar:", error);
-      Alert.alert(
-        "Error",
-        "Ocurrió un problema al registrar tu cuenta. Inténtalo más tarde.",
-        [{ text: "Aceptar", onPress: () => router.replace("/auth/login") }]
-      );
+      console.error("Error de red al registrar:", error);
+      Alert.alert("Error", "No se pudo conectar al backend. Asegura que el servidor esté activo y la URL sea accesible desde tu dispositivo.");
     }
   };
 
