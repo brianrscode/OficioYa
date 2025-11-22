@@ -8,6 +8,8 @@ from .services.search_service import SearchService
 from .services.strategies.strategy_ciudad import StrategyCiudad
 from .services.strategies.strategy_rating import StrategyRating
 
+from apps.usuarios.models import Usuario
+
 class ServicioListCreateView(generics.ListCreateAPIView):
     queryset = Servicio.objects.all()
     serializer_class = ServicioSerializer
@@ -20,8 +22,8 @@ class PrestadorServiciosListCreateView(generics.ListCreateAPIView):
 
 class BuscarPrestadoresView(APIView):
     def get(self, request):
-        servicio = request.query_params.get("servicio", "")
-        ciudad = request.query_params.get("ciudad", "")
+        servicio_query = request.query_params.get("servicio", "")
+        ciudad_query = request.query_params.get("ciudad", "")
         criterio = request.query_params.get("criterio", "rating")
 
         if criterio == "ciudad":
@@ -30,28 +32,36 @@ class BuscarPrestadoresView(APIView):
             strategy = StrategyRating()
 
         service = SearchService(strategy)
-        queryset = PrestadorServicios.objects.select_related("servicio", "usuario").all()
 
-        if servicio:
+        # Base queryset: Usuarios que son prestadores (tienen servicios ofrecidos)
+        # Usamos distinct() para evitar duplicados si el filtro por servicio hace match múltiple
+        queryset = Usuario.objects.filter(servicios_ofrecidos__isnull=False).distinct()
+        queryset = queryset.select_related("ciudad").prefetch_related("servicios_ofrecidos__servicio")
+
+        if servicio_query:
             queryset = queryset.filter(
-                Q(servicio__nombre__icontains=servicio) |
-                Q(usuario__username__icontains=servicio)
-            )
-        if ciudad:
-            queryset = queryset.filter(usuario__ciudad__nombre__icontains=ciudad)
+                Q(servicios_ofrecidos__servicio__nombre__icontains=servicio_query) |
+                Q(username__icontains=servicio_query) |
+                Q(nombres__icontains=servicio_query) |
+                Q(apellido_paterno__icontains=servicio_query)
+            ).distinct()
 
-        prestadores = service.buscar_prestadores(servicio, ciudad, queryset)
+        if ciudad_query:
+            queryset = queryset.filter(ciudad__nombre__icontains=ciudad_query)
 
-        data = [
-            {
-                "nombres": p.usuario.nombres,
-                "apellido_paterno": p.usuario.apellido_paterno,
-                "apellido_materno": p.usuario.apellido_materno,
-                "prestador": p.usuario.username,
-                "servicio": p.servicio.nombre,
-                "fecha_registro": p.fecha_registro,
-                "ciudad": p.usuario.ciudad.nombre
-            }
-            for p in prestadores
-        ]
+        prestadores = service.buscar_prestadores(servicio_query, ciudad_query, queryset)
+
+        data = []
+        for p in prestadores:
+            servicios_lista = [ps.servicio.nombre for ps in p.servicios_ofrecidos.all()]
+            data.append({
+                "nombres": p.nombres,
+                "apellido_paterno": p.apellido_paterno,
+                "apellido_materno": p.apellido_materno,
+                "prestador": p.username,
+                "servicios": servicios_lista,
+                "fecha_registro": p.date_joined,
+                "ciudad": p.ciudad.nombre if p.ciudad else ""
+            })
+
         return Response(data)
