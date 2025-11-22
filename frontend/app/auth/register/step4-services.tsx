@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "@/constants/Config";
 import { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, FlatList, StyleSheet, ActivityIndicator } from "react-native";
 import { useRegistro } from "@/context/RegisterContext";
@@ -14,7 +15,8 @@ export default function Step4Services() {
   // const [seleccionados, setSeleccionados] = useState<number[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const API_URL = "http://127.0.0.1:8000/api/servicios/servicios/";
+
+  const API_URL = `${API_BASE_URL}/api/servicios/servicios/`;
 
   const [fontsLoaded] = useFonts({
     PlayfairDisplay_400Regular,
@@ -101,7 +103,7 @@ export default function Step4Services() {
 }
 
 const styles = StyleSheet.create({
-loadingContainer: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#F6F7F8", },
+  loadingContainer: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#F6F7F8", },
   container: { flex: 1, backgroundColor: "#F6F7F8", paddingHorizontal: 30, paddingTop: 100, },
   brand: { position: "absolute", top: 70, left: 35, fontFamily: "PlayfairDisplay_700Bold", fontSize: 20, color: "#032B44", },
   title: { fontSize: 24, fontFamily: "PlayfairDisplay_700Bold", textAlign: "center", marginBottom: 20, },

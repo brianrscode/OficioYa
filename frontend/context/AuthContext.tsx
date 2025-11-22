@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { API_BASE_URL } from "@/constants/Config";
 
 interface AuthContextProps {
   user: any;
@@ -12,13 +13,13 @@ interface AuthContextProps {
 
 const AuthContext = createContext<AuthContextProps>(null!);
 
-export const AuthProvider = ({ children }) => {
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState(null);
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [refreshToken, setRefreshToken] = useState<string | null>(null);
 
-  const API_LOGIN = "http://127.0.0.1:8000/api/usuarios/login/";
-  const API_REFRESH = "http://127.0.0.1:8000/api/usuarios/refresh/";
+  const API_LOGIN = `${API_BASE_URL}/api/usuarios/login/`;
+  const API_REFRESH = `${API_BASE_URL}/api/usuarios/refresh/`;
 
   // --- LOGIN ---
   const login = async (username: string, password: string) => {

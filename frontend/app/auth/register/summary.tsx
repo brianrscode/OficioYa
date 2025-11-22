@@ -1,8 +1,9 @@
+import { API_BASE_URL } from "@/constants/Config";
 import { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Alert, ActivityIndicator, } from "react-native";
 import { useRegistro } from "@/context/RegisterContext";
 import { router } from "expo-router";
-import { useFonts, PlayfairDisplay_400Regular, PlayfairDisplay_700Bold,} from "@expo-google-fonts/playfair-display";
+import { useFonts, PlayfairDisplay_400Regular, PlayfairDisplay_700Bold, } from "@expo-google-fonts/playfair-display";
 
 export default function Summary() {
   const { registro } = useRegistro();
@@ -16,8 +17,9 @@ export default function Summary() {
     PlayfairDisplay_700Bold,
   });
 
-  const API_URL = "http://127.0.0.1:8000/api/usuarios/register/";
-  const API_SERVICIOS = "http://127.0.0.1:8000/api/servicios/servicios/";
+
+  const API_URL = `${API_BASE_URL}/api/usuarios/register/`;
+  const API_SERVICIOS = `${API_BASE_URL}/api/servicios/servicios/`;
 
   useEffect(() => {
     const cargarServicios = async () => {
@@ -27,7 +29,7 @@ export default function Summary() {
       }
       try {
         const res = await fetch(API_SERVICIOS);
-        const data: Array<{id:number; nombre:string}> = await res.json();
+        const data: Array<{ id: number; nombre: string }> = await res.json();
         const filtrados = data.filter((s) => registro.servicios.includes(s.id));
         setNombresServicios(filtrados.map((s) => s.nombre));
         console.log("contexto", registro);
@@ -88,12 +90,12 @@ export default function Summary() {
 
       if (!res.ok) {
         let detail: any = null;
-        try { detail = await res.json(); } catch {}
+        try { detail = await res.json(); } catch { }
         console.error("Registro fallido", res.status, detail);
         const mensajes = detail && typeof detail === 'object'
           ? Object.entries(detail)
-              .map(([k, v]) => `${k}: ${Array.isArray(v) ? v.join(', ') : v}`)
-              .join("\n")
+            .map(([k, v]) => `${k}: ${Array.isArray(v) ? v.join(', ') : v}`)
+            .join("\n")
           : "No se pudo registrar. Verifica tus datos.";
         Alert.alert("Error", mensajes);
         return;
@@ -161,7 +163,7 @@ export default function Summary() {
 const styles = StyleSheet.create({
   loading: { flex: 1, justifyContent: "center", alignItems: "center" },
   container: { flexGrow: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#F6F7F8", paddingHorizontal: 30, paddingVertical: 40, },
-  brand: { position: "absolute", top: 70, left: 35, fontFamily: "PlayfairDisplay_700Bold", fontSize: 20,  color: "#032B44", },
+  brand: { position: "absolute", top: 70, left: 35, fontFamily: "PlayfairDisplay_700Bold", fontSize: 20, color: "#032B44", },
   title: { fontSize: 26, fontFamily: "PlayfairDisplay_700Bold", marginBottom: 25, textAlign: "center", },
   section: { alignSelf: "flex-start", fontFamily: "PlayfairDisplay_700Bold", color: "#044081", fontSize: 18, marginTop: 20, },
   text: { alignSelf: "flex-start", fontFamily: "PlayfairDisplay_400Regular", fontSize: 16, marginTop: 5, },

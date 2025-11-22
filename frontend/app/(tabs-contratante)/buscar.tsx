@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "@/constants/Config";
 import { View, TextInput, TouchableOpacity, Text, FlatList, ActivityIndicator, StyleSheet } from "react-native";
 import { useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
@@ -12,7 +13,8 @@ export default function BuscarScreen() {
     const [error, setError] = useState("");
 
     const endpoint = useMemo(() => {
-        const url = new URL("http://127.0.0.1:8000/api/servicios/buscar/");
+
+        const url = new URL(`${API_BASE_URL}/api/servicios/buscar/`);
         if (servicio) url.searchParams.set("servicio", servicio);
         if (ciudad) url.searchParams.set("ciudad", ciudad);
         return url.toString();

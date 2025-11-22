@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "@/constants/Config";
 import { useEffect, useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator } from "react-native";
 import { Picker } from "@react-native-picker/picker";
@@ -19,7 +20,8 @@ export default function Step2Personal() {
   useEffect(() => {
     const obtenerCiudades = async () => {
       try {
-        const res = await fetch("http://127.0.0.1:8000/api/ubicacion/ciudades/");
+
+        const res = await fetch(`${API_BASE_URL}/api/ubicacion/ciudades/`);
         const data = await res.json();
         setCiudades(data);
       } catch (error) {
