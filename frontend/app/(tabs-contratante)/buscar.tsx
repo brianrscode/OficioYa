@@ -7,7 +7,6 @@ export default function BuscarScreen() {
     const { accessToken } = useAuth();
     const [servicio, setServicio] = useState("");
     const [ciudad, setCiudad] = useState("");
-    const [criterio, setCriterio] = useState<"rating" | "ciudad">("rating");
     const [results, setResults] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
@@ -16,9 +15,8 @@ export default function BuscarScreen() {
         const url = new URL("http://127.0.0.1:8000/api/servicios/buscar/");
         if (servicio) url.searchParams.set("servicio", servicio);
         if (ciudad) url.searchParams.set("ciudad", ciudad);
-        if (criterio) url.searchParams.set("criterio", criterio);
         return url.toString();
-    }, [servicio, ciudad, criterio]);
+    }, [servicio, ciudad]);
 
     const fetchServicios = async () => {
         try {
@@ -63,20 +61,6 @@ export default function BuscarScreen() {
                     style={styles.input}
                     autoCapitalize="none"
                 />
-                <View style={styles.criterioRow}>
-                    <TouchableOpacity
-                        style={[styles.criterioBtn, criterio === "rating" && styles.criterioBtnActive]}
-                        onPress={() => setCriterio("rating")}
-                    >
-                        <Text style={[styles.criterioText, criterio === "rating" && styles.criterioTextActive]}>Rating</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        style={[styles.criterioBtn, criterio === "ciudad" && styles.criterioBtnActive]}
-                        onPress={() => setCriterio("ciudad")}
-                    >
-                        <Text style={[styles.criterioText, criterio === "ciudad" && styles.criterioTextActive]}>Ciudad</Text>
-                    </TouchableOpacity>
-                </View>
                 <TouchableOpacity style={styles.button} onPress={fetchServicios} disabled={loading}>
                     <Text style={styles.buttonText}>{loading ? "Buscando..." : "Buscar"}</Text>
                 </TouchableOpacity>
@@ -95,7 +79,7 @@ export default function BuscarScreen() {
                 renderItem={({ item }) => (
                     <View style={styles.card}>
                         <Text style={styles.title}>{item.prestador}</Text>
-                        <Text style={styles.subtitle}>{item.servicio}</Text>
+                        <Text style={styles.subtitle}>{item.servicios.join(", ")}</Text>
                         <Text style={styles.meta}>{item.ciudad}</Text>
                         <Text style={styles.meta}>{item.nombres} {item.apellido_paterno} {item.apellido_materno}</Text>
                     </View>
@@ -109,11 +93,6 @@ export default function BuscarScreen() {
 const styles = StyleSheet.create({
     container: { flex: 1, padding: 16 },
     filtersRow: { gap: 8 },
-    criterioRow: { flexDirection: "row", gap: 8 },
-    criterioBtn: { flex: 1, padding: 10, borderWidth: 1, borderColor: "#ddd", borderRadius: 8, alignItems: "center" },
-    criterioBtnActive: { backgroundColor: "#007AFF22", borderColor: "#007AFF" },
-    criterioText: { color: "#333" },
-    criterioTextActive: { color: "#007AFF", fontWeight: "600" },
     input: { borderWidth: 1, borderColor: "#ddd", borderRadius: 8, padding: 10 },
     button: { backgroundColor: "#007AFF", padding: 12, borderRadius: 8, alignItems: "center" },
     buttonText: { color: "white", fontWeight: "600" },
