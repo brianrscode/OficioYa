@@ -4,7 +4,7 @@ import { router } from "expo-router";
 import { useFonts, PlayfairDisplay_400Regular, PlayfairDisplay_700Bold } from "@expo-google-fonts/playfair-display";
 
 export default function Step1Account() {
-  
+
   const { registro, setRegistro } = useRegistro();
   const [fontsLoaded] = useFonts({
     PlayfairDisplay_400Regular,
@@ -35,6 +35,14 @@ export default function Step1Account() {
       />
 
       <TextInput
+        placeholder="Teléfono"
+        style={styles.input}
+        keyboardType="phone-pad"
+        value={registro.telefono}
+        onChangeText={(text) => setRegistro({ ...registro, telefono: text })}
+      />
+
+      <TextInput
         placeholder="Contraseña"
         style={styles.input}
         secureTextEntry
@@ -57,6 +65,6 @@ const styles = StyleSheet.create({
   brand: { position: "absolute", top: 70, left: 35, fontFamily: "PlayfairDisplay_700Bold", fontSize: 20, color: "#032B44", },
   title: { fontSize: 26, fontFamily: "PlayfairDisplay_700Bold", marginBottom: 25, },
   input: { width: "100%", borderWidth: 1, borderColor: "#CFCFCF", borderRadius: 10, padding: 12, marginBottom: 15, backgroundColor: "#FFFFFF", fontFamily: "PlayfairDisplay_400Regular", },
-  button: { width: "100%", backgroundColor: "#032B44",  padding: 15, borderRadius: 10, alignItems: "center", marginTop: 10, },
-  buttonText: { color: "#FFFFFF", fontWeight: "bold", fontSize: 16,},
+  button: { width: "100%", backgroundColor: "#032B44", padding: 15, borderRadius: 10, alignItems: "center", marginTop: 10, },
+  buttonText: { color: "#FFFFFF", fontWeight: "bold", fontSize: 16, },
 });

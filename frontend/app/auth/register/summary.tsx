@@ -66,6 +66,7 @@ export default function Summary() {
     const payload: any = {
       username: registro.username,
       email: registro.email,
+      telefono: registro.telefono || null,
       password: registro.password,
       nombres: registro.nombres,
       apellido_paterno: registro.apellido_paterno,
@@ -118,6 +119,7 @@ export default function Summary() {
       <Text style={styles.section}>Cuenta</Text>
       <Text style={styles.text}>Usuario: {registro.username}</Text>
       <Text style={styles.text}>Correo: {registro.email}</Text>
+      <Text style={styles.text}>Teléfono: {registro.telefono || "—"}</Text>
 
       <Text style={styles.section}>Datos personales</Text>
       <Text style={styles.text}>

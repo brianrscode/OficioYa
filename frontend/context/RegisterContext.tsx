@@ -6,6 +6,7 @@ export function RegisterProvider({ children }: { children: React.ReactNode }) {
   const [registro, setRegistro] = useState({
     username: "",
     email: "",
+    telefono: "",
     password: "",
     nombres: "",
     apellido_paterno: "",

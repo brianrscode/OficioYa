@@ -12,7 +12,7 @@ class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
         fields = [
-            'id', 'username', 'email', 'nombres', 'apellido_paterno',
+            'id', 'username', 'email', 'telefono', 'nombres', 'apellido_paterno',
             'apellido_materno', 'foto', 'sexo', 'fecha_nacimiento',
             'ciudad', 'rol'
         ]
@@ -29,7 +29,7 @@ class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
         fields = [
-            'username', 'email', 'password',
+            'username', 'email', 'telefono', 'password',
             'nombres', 'apellido_paterno', 'apellido_materno',
             'foto', 'sexo', 'fecha_nacimiento', 'ciudad', 'rol',
             'servicios'
@@ -40,6 +40,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         user = Usuario.objects.create_user(
             username=validated_data['username'],
             email=validated_data['email'],
+            telefono=validated_data.get('telefono', None),
             password=validated_data['password'],
             nombres=validated_data.get('nombres', ''),
             apellido_paterno=validated_data.get('apellido_paterno', ''),
