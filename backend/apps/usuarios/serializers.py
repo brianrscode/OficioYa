@@ -83,3 +83,32 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             "rol": self.user.rol
         }
         return data
+
+
+class UpdateUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Usuario
+        fields = [
+            'nombres',
+            'apellido_paterno',
+            'apellido_materno',
+            'username',
+            'ciudad',
+            'sexo',
+            'fecha_nacimiento',
+            'telefono',
+            'email'
+        ]
+
+    def update(self, instance, validated_data):
+        instance.nombres = validated_data.get('nombres', instance.nombres)
+        instance.apellido_paterno = validated_data.get('apellido_paterno', instance.apellido_paterno)
+        instance.apellido_materno = validated_data.get('apellido_materno', instance.apellido_materno)
+        instance.username = validated_data.get('username', instance.username)
+        instance.ciudad = validated_data.get('ciudad', instance.ciudad)
+        instance.sexo = validated_data.get('sexo', instance.sexo)
+        instance.fecha_nacimiento = validated_data.get('fecha_nacimiento', instance.fecha_nacimiento)
+        instance.telefono = validated_data.get('telefono', instance.telefono)
+        instance.email = validated_data.get('email', instance.email)
+        instance.save()
+        return instance

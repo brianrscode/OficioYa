@@ -9,7 +9,8 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from .serializers import (
     UsuarioSerializer,
     RegisterSerializer,
-    CustomTokenObtainPairSerializer
+    CustomTokenObtainPairSerializer,
+    UpdateUserSerializer
 )
 
 
@@ -43,3 +44,12 @@ class MeView(APIView):
     def get(self, request):
         serializer = UsuarioSerializer(request.user)
         return Response(serializer.data)
+
+
+class UpdateUserView(generics.UpdateAPIView):
+    queryset = Usuario.objects.all()
+    serializer_class = UpdateUserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
