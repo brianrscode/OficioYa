@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image} from "react-native";
 import { useAuth } from "@/context/AuthContext";
 import { Ionicons } from "@expo/vector-icons";
-import { Link } from "expo-router";
+import { Link, router} from "expo-router";
 
 export default function PerfilScreen() {
   const { user, logout } = useAuth();
@@ -11,7 +11,7 @@ export default function PerfilScreen() {
       
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => router.back()}>
           <Ionicons name="arrow-back" size={24} color="#000" />
         </TouchableOpacity>
 
