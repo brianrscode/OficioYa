@@ -63,6 +63,14 @@ export default function TabsContratanteLayout() {
           href: null,
         }}
       />
+      <Tabs.Screen
+      name = "perfil-contratante/modificar-datos"
+      options={{ href: null}}
+      />
+      <Tabs.Screen
+      name ="perfil-contratante/cambiar-contrasena"
+      options={{href: null}}
+    />
     </Tabs>
   );
 }
