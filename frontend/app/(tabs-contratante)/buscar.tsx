@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useNavigation } from "expo-router";
 import { router } from "expo-router";
+import { Image } from "expo-image";
 
 
 export default function BuscarScreen() {
@@ -88,6 +89,11 @@ export default function BuscarScreen() {
                 renderItem={({ item }) => (
                     <View style={styles.card}>
                         <TouchableOpacity onPress={() => navigateToPrestadorBuscado(item.id)}>
+                            <View style={styles.avatarPlaceholder}>
+                                <Text style={styles.avatarText}>
+                                    {item.nombres[0]}{item.apellido_paterno[0]}
+                                </Text>
+                            </View>
                             <Text style={styles.title}>{item.prestador}</Text>
                             <Text style={styles.subtitle}>{item.servicios.join(", ")}</Text>
                             <Text style={styles.meta}>{item.ciudad}</Text>
@@ -116,6 +122,11 @@ const styles = StyleSheet.create({
     meta: { color: "#333" },
     empty: { textAlign: "center", marginTop: 24, color: "#666" },
     id: { fontSize: 12, color: "#333", marginBottom: 4 },
+    avatarPlaceholder: {
+        width: 80, height: 80, borderRadius: 40, backgroundColor: "#007AFF",
+        justifyContent: "center", alignItems: "center", marginBottom: 12
+    },
+    avatarText: { color: "white", fontSize: 32, fontWeight: "bold" },
 });
 
 
