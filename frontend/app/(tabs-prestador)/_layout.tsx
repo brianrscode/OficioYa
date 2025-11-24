@@ -57,6 +57,15 @@ export default function TabsPrestadorLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+      name = "perfil-prestador/modificar-datos"
+      options={{href: null}} 
+      />
+
+      <Tabs.Screen
+      name = "perfil-prestador/cambiar-contrasena"
+      options={{href: null}} 
+      />
     </Tabs>
   );
 }
