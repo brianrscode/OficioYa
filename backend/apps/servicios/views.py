@@ -57,6 +57,7 @@ class BuscarPrestadoresView(APIView):
         for p in prestadores:
             servicios_lista = [ps.servicio.nombre for ps in p.servicios_ofrecidos.all()]
             data.append({
+                "id": p.id,
                 "nombres": p.nombres,
                 "apellido_paterno": p.apellido_paterno,
                 "apellido_materno": p.apellido_materno,
@@ -67,3 +68,32 @@ class BuscarPrestadoresView(APIView):
             })
 
         return Response(data)
+
+
+class PrestadorDetailView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, pk):
+        try:
+            p = Usuario.objects.get(pk=pk)
+            # Verificar que sea prestador (opcional, pero recomendado)
+            if not p.servicios_ofrecidos.exists():
+                 return Response({"error": "Este usuario no es un prestador de servicios"}, status=404)
+
+            servicios_lista = [ps.servicio.nombre for ps in p.servicios_ofrecidos.all()]
+
+            data = {
+                "id": p.id,
+                "nombres": p.nombres,
+                "apellido_paterno": p.apellido_paterno,
+                "apellido_materno": p.apellido_materno,
+                "prestador": p.username,
+                "servicios": servicios_lista,
+                "fecha_registro": p.date_joined,
+                "ciudad": p.ciudad.nombre if p.ciudad else "",
+                "telefono": getattr(p, 'telefono', 'No disponible'), # Asumiendo que existe el campo, si no usar getattr
+                "email": p.email
+            }
+            return Response(data)
+        except Usuario.DoesNotExist:
+            return Response({"error": "Prestador no encontrado"}, status=404)

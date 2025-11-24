@@ -57,6 +57,12 @@ export default function TabsContratanteLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="prestador-buscado"
+        options={{
+          href: null,
+        }}
+      />
     </Tabs>
   );
 }

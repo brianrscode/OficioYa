@@ -2,10 +2,14 @@ import { API_BASE_URL } from "@/constants/Config";
 import { View, TextInput, TouchableOpacity, Text, FlatList, ActivityIndicator, StyleSheet } from "react-native";
 import { useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { useNavigation } from "expo-router";
+import { router } from "expo-router";
+
 
 export default function BuscarScreen() {
     // TODO: Implementar búsqueda de servicios
     const { accessToken } = useAuth();
+    const navigation = useNavigation();
     const [servicio, setServicio] = useState("");
     const [ciudad, setCiudad] = useState("");
     const [results, setResults] = useState<any[]>([]);
@@ -45,6 +49,10 @@ export default function BuscarScreen() {
         fetchServicios();
     }, []);
 
+    const navigateToPrestadorBuscado = (id: number) => {
+        router.push({ pathname: "/(tabs-contratante)/prestador-buscado", params: { id } });
+    };
+
     return (
         <View style={styles.container}>
             <View style={styles.filtersRow}>
@@ -79,10 +87,12 @@ export default function BuscarScreen() {
                 contentContainerStyle={styles.list}
                 renderItem={({ item }) => (
                     <View style={styles.card}>
-                        <Text style={styles.title}>{item.prestador}</Text>
-                        <Text style={styles.subtitle}>{item.servicios.join(", ")}</Text>
-                        <Text style={styles.meta}>{item.ciudad}</Text>
-                        <Text style={styles.meta}>{item.nombres} {item.apellido_paterno} {item.apellido_materno}</Text>
+                        <TouchableOpacity onPress={() => navigateToPrestadorBuscado(item.id)}>
+                            <Text style={styles.title}>{item.prestador}</Text>
+                            <Text style={styles.subtitle}>{item.servicios.join(", ")}</Text>
+                            <Text style={styles.meta}>{item.ciudad}</Text>
+                            <Text style={styles.meta}>{item.nombres} {item.apellido_paterno} {item.apellido_materno}</Text>
+                        </TouchableOpacity>
                     </View>
                 )}
                 ListEmptyComponent={!loading ? <Text style={styles.empty}>Sin resultados</Text> : null}
@@ -105,6 +115,7 @@ const styles = StyleSheet.create({
     subtitle: { color: "#555", marginBottom: 4 },
     meta: { color: "#333" },
     empty: { textAlign: "center", marginTop: 24, color: "#666" },
+    id: { fontSize: 12, color: "#333", marginBottom: 4 },
 });
 
 
