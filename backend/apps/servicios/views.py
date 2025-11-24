@@ -1,4 +1,5 @@
 from rest_framework import generics
+from rest_framework.permissions import AllowAny
 from .models import Servicio, PrestadorServicios
 from .serializers import ServicioSerializer, PrestadorServiciosSerializer
 from rest_framework.views import APIView
@@ -21,6 +22,7 @@ class PrestadorServiciosListCreateView(generics.ListCreateAPIView):
 
 
 class BuscarPrestadoresView(APIView):
+    permission_classes = [AllowAny]
     def get(self, request):
         servicio_query = request.query_params.get("servicio", "")
         ciudad_query = request.query_params.get("ciudad", "")

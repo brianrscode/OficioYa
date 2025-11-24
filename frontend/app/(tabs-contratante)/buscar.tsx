@@ -27,7 +27,6 @@ export default function BuscarScreen() {
             const res = await fetch(endpoint, {
                 headers: {
                     "Content-Type": "application/json",
-                    ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
                 },
             });
             if (!res.ok) throw new Error("Error de búsqueda");
