@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     container: { flex: 1, padding: 16 },
     filtersRow: { gap: 8 },
     input: { borderWidth: 1, borderColor: "#ddd", borderRadius: 8, padding: 10 },
-    button: { backgroundColor: "#007AFF", padding: 12, borderRadius: 8, alignItems: "center" },
+    button: { backgroundColor: "#0A1F57", padding: 12, borderRadius: 8, alignItems: "center" },
     buttonText: { color: "white", fontWeight: "600" },
     loader: { marginTop: 24 },
     error: { color: "#c00", marginVertical: 8 },
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     empty: { textAlign: "center", marginTop: 24, color: "#666" },
     id: { fontSize: 12, color: "#333", marginBottom: 4 },
     avatarPlaceholder: {
-        width: 80, height: 80, borderRadius: 40, backgroundColor: "#007AFF",
+        width: 80, height: 80, borderRadius: 40, backgroundColor: "#0A1F57",
         justifyContent: "center", alignItems: "center", marginBottom: 12
     },
     avatarText: { color: "white", fontSize: 32, fontWeight: "bold" },

@@ -37,8 +37,8 @@ export default function PrestadorBuscadoScreen() {
 
     return (
         <ScrollView style={styles.container}>
-            <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-                <Ionicons name="arrow-back" size={24} color="#007AFF" />
+            <TouchableOpacity onPress={() => router.push("/buscar")} style={styles.backButton}>
+                <Ionicons name="arrow-back" size={24} />
                 <Text style={styles.backText}>Volver</Text>
             </TouchableOpacity>
 
@@ -89,10 +89,10 @@ const styles = StyleSheet.create({
     loader: { marginTop: 50 },
     error: { color: "red", textAlign: "center", marginTop: 20 },
     backButton: { flexDirection: "row", alignItems: "center", marginBottom: 20 },
-    backText: { color: "#007AFF", fontSize: 16, marginLeft: 4 },
+    backText: {fontSize: 16, marginLeft: 4 },
     header: { alignItems: "center", marginBottom: 24 },
     avatarPlaceholder: {
-        width: 80, height: 80, borderRadius: 40, backgroundColor: "#007AFF",
+        width: 80, height: 80, borderRadius: 40, backgroundColor: "#044081",
         justifyContent: "center", alignItems: "center", marginBottom: 12
     },
     avatarText: { color: "white", fontSize: 32, fontWeight: "bold" },

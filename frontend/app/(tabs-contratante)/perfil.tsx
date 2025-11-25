@@ -63,10 +63,13 @@ export default function PerfilScreen() {
       </View>
 
       {/* Cerrar sesión */}
-      <View style={styles.card}>
-        <TouchableOpacity style={styles.button} onPress={logout}>
-            <Text style={styles.buttonText}>Cerrar sesión</Text>
-          </TouchableOpacity>
+      <View style={styles.logoutCard}>
+        <TouchableOpacity style={styles.logoutRow} onPress={logout}>
+          <View style={styles.iconRedBox}>
+            <Ionicons name="exit-outline" size={20} color="#D10A0A" />
+          </View>
+          <Text style={styles.logoutText}>Cerrar sesión</Text>
+        </TouchableOpacity>
       </View>
 
     </ScrollView>
@@ -81,11 +84,8 @@ const styles = StyleSheet.create({
   avatar: {width: 130, height: 130, borderRadius: 100,},
   profileName: {fontSize: 24, fontWeight: "700", marginTop: 12,},
   profileRole: { color: "#6B7280", fontSize: 16,},
-  card: {backgroundColor: "#FFFFFF",borderRadius: 25,padding: 18,marginBottom: 20, shadowColor: "#000",
-    shadowOpacity: 0.05,
-    shadowRadius: 5,
-    elevation: 2,
-  },
+  card: {backgroundColor: "#FFFFFF",borderRadius: 25,padding: 18,marginBottom: 20,
+  shadowOpacity: 0.05, shadowRadius: 5, elevation: 2,},
   row: {flexDirection: "row",alignItems: "center",paddingVertical: 10,},
   rowText: {flex: 1,fontSize: 16,},
   iconBlueBox: {backgroundColor: "#DBEAFE",padding: 10,borderRadius: 50,marginRight: 10,},
@@ -94,6 +94,9 @@ const styles = StyleSheet.create({
   button: { marginTop: 20, backgroundColor: "#FF3B30", padding: 12, borderRadius: 8 },
   buttonText: { color: "#fff", fontWeight: "bold" },
   dataLabel: {fontSize: 14,color: "#6B7280",fontWeight: "500",marginTop: 8, textAlign:"center"},
-  dataValue: {fontSize: 16,color: "#111827",fontWeight: "600",marginTop: 2, textAlign: "center"},
+  dataValue: {fontSize: 16,fontWeight: "600",marginTop: 2, textAlign: "center"},
   noUserText: {fontSize: 16,color: "#DC2626",fontWeight: "600",textAlign: "center",paddingVertical: 10,},
+  logoutCard: {backgroundColor: "#FFFFFF", borderRadius: 20, paddingVertical: 8, paddingHorizontal: 14, marginBottom: 20,},
+  logoutText: {fontSize: 16, color: "#D10A0A", fontWeight: "600",},
+  logoutRow: {flexDirection: "row", alignItems: "center", paddingVertical: 16,},
 });
