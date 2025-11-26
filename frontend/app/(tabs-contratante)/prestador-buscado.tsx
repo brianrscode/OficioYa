@@ -3,6 +3,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { API_BASE_URL } from "@/constants/Config";
 import { Ionicons } from "@expo/vector-icons";
+import PublicacionesList from "@/components/PublicacionesList";
 
 export default function PrestadorBuscadoScreen() {
     const { id } = useLocalSearchParams();
@@ -80,6 +81,8 @@ export default function PrestadorBuscadoScreen() {
                 <Text style={styles.sectionTitle}>Miembro desde</Text>
                 <Text style={styles.text}>{new Date(prestador.fecha_registro).toLocaleDateString()}</Text>
             </View>
+
+            <PublicacionesList usuarioId={id as string} />
         </ScrollView>
     );
 }
@@ -89,7 +92,7 @@ const styles = StyleSheet.create({
     loader: { marginTop: 50 },
     error: { color: "red", textAlign: "center", marginTop: 20 },
     backButton: { flexDirection: "row", alignItems: "center", marginBottom: 20 },
-    backText: {fontSize: 16, marginLeft: 4 },
+    backText: { fontSize: 16, marginLeft: 4 },
     header: { alignItems: "center", marginBottom: 24 },
     avatarPlaceholder: {
         width: 80, height: 80, borderRadius: 40, backgroundColor: "#044081",
