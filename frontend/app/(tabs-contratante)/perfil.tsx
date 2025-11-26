@@ -12,7 +12,7 @@ export default function PerfilScreen() {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()}>
-          <Ionicons name="arrow-back" size={24} color="#000" />
+          <Ionicons name="arrow-back" size={24}/>
         </TouchableOpacity>
 
         <Text style={styles.title}>Mi Perfil</Text>

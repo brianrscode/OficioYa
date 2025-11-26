@@ -57,7 +57,7 @@ export default function ModificarDatosScreen(){
             }
 
             const data = await res.json();
-            console.log("📌 Datos recibidos desde /me/:", data);
+            console.log("Datos recibidos desde /me/:", data);
             setNombre(data.nombres);
             setApellidoP(data.apellido_paterno);
             setApellidoM(data.apellido_materno);
@@ -89,8 +89,8 @@ export default function ModificarDatosScreen(){
 
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()}>
-          <Ionicons name="arrow-back" size={24} color="#000" />
+        <TouchableOpacity onPress={() => router.push("/perfil")}>
+          <Ionicons name="arrow-back" size={24} />
         </TouchableOpacity>
 
         <Text style={styles.title}>Editar Datos Personales</Text>

@@ -22,8 +22,8 @@ export default function CambiarContrasenaScreen() {
       
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()}>
-          <Ionicons name="arrow-back" size={24} color="#000" />
+        <TouchableOpacity onPress={() => router.push("/perfil")}>
+          <Ionicons name="arrow-back" size={24} />
         </TouchableOpacity>
 
         <Text style={styles.title}>Cambiar Contraseña</Text>
