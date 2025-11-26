@@ -1,11 +1,12 @@
 from rest_framework import generics, permissions
 from .models import Publicacion
 from .serializers import PublicacionSerializer
+from .permissions import IsPrestadorOrReadOnly
 
 
 class PublicacionListCreateView(generics.ListCreateAPIView):
     serializer_class = PublicacionSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [IsPrestadorOrReadOnly]
 
     def get_queryset(self):
         queryset = Publicacion.objects.all()
