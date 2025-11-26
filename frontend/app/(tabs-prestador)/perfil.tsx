@@ -60,6 +60,17 @@ export default function PerfilScreen() {
           <Text style={styles.rowText}>Cambiar contraseña</Text>
           <Ionicons name="chevron-forward" size={20} color="#999" />
         </Link>
+
+        <View style={styles.divider} />
+
+        {/* Mis publicaciones */}
+        <Link href={"/perfil-prestador/mis-publicaciones"}>
+          <View style={styles.iconBlueBox}>
+            <Ionicons name="image" size={20} color="#1D4ED8" />
+          </View>
+          <Text style={styles.rowText}>Mis publicaciones</Text>
+          <Ionicons name="chevron-forward" size={20} color="#999" />
+        </Link>
       </View>
 
       {/* Cerrar sesión */}
