@@ -19,14 +19,8 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', default=False) == 'True'
 
-<<<<<<< HEAD
-ALLOWED_HOSTS = [os.getenv('ALLOWED_HOSTS_DEBUG')]
-=======
 if DEBUG:
     ALLOWED_HOSTS = [os.getenv('ALLOWED_HOSTS_DEBUG')]
-else:
-    ALLOWED_HOSTS = [os.getenv('ALLOWED_HOSTS')]
->>>>>>> main
 
 RENDER_EXTERNAL_HOSTNAME = os.getenv('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:

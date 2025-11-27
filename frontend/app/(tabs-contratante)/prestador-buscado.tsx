@@ -91,22 +91,11 @@ const styles = StyleSheet.create({
     container: { flex: 1, padding: 16, backgroundColor: "#F3F4F6" },
     loader: { marginTop: 50 },
     error: { color: "red", textAlign: "center", marginTop: 20 },
-<<<<<<< HEAD
     backButton: { flexDirection: "row", alignItems: "center", marginBottom: 16 },
     backText: { color: "#0A1F57", fontSize: 14, marginLeft: 4 },
     header: { alignItems: "center", marginBottom: 24, marginTop: 4 },
     avatarPlaceholder: { width: 80, height: 80, borderRadius: 40, backgroundColor: "#0A1F57", justifyContent: "center", alignItems: "center", marginBottom: 14 },
     avatarText: { color: "white", fontSize: 36, fontWeight: "bold" },
-=======
-    backButton: { flexDirection: "row", alignItems: "center", marginBottom: 20 },
-    backText: { fontSize: 16, marginLeft: 4 },
-    header: { alignItems: "center", marginBottom: 24 },
-    avatarPlaceholder: {
-        width: 80, height: 80, borderRadius: 40, backgroundColor: "#044081",
-        justifyContent: "center", alignItems: "center", marginBottom: 12
-    },
-    avatarText: { color: "white", fontSize: 32, fontWeight: "bold" },
->>>>>>> main
     name: { fontSize: 24, fontWeight: "bold", textAlign: "center" },
     username: { fontSize: 16, color: "#666", marginTop: 4 },
     section: { backgroundColor: "#fff", padding: 16, borderRadius: 16, marginBottom: 16, shadowOpacity: 0.08, shadowRadius: 7, elevation: 1 },
