@@ -70,6 +70,10 @@ export default function TabsPrestadorLayout() {
         name="perfil-prestador/mis-publicaciones"
         options={{ href: null }}
       />
+      <Tabs.Screen
+        name="perfil-prestador/crear-publicacion"
+        options={{ href: null }}
+      />
     </Tabs>
   );
 }

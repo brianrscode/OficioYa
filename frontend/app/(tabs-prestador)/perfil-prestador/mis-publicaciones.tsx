@@ -12,6 +12,11 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "@/context/AuthContext";
 import PublicacionesList from "@/components/PublicacionesList";
+import { router } from "expo-router";
+
+const navigateCrearPublicacion = () => {
+    router.push("/(tabs-prestador)/perfil-prestador/crear-publicacion");
+}
 
 export default function MisPublicacionesScreen() {
     const { user, token } = useAuth();
@@ -61,7 +66,7 @@ export default function MisPublicacionesScreen() {
 
             <PublicacionesList usuarioId={user.id} />
 
-            <TouchableOpacity style={styles.fab}>
+            <TouchableOpacity style={styles.fab} onPress={navigateCrearPublicacion}>
                 <Ionicons name="add" size={22} color="#fff" />
                 <Text style={styles.fabText}>Nueva</Text>
             </TouchableOpacity>
