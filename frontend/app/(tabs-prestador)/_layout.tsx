@@ -58,13 +58,21 @@ export default function TabsPrestadorLayout() {
         }}
       />
       <Tabs.Screen
-      name = "perfil-prestador/modificar-datos"
-      options={{href: null}} 
+        name="perfil-prestador/modificar-datos"
+        options={{ href: null }}
       />
 
       <Tabs.Screen
-      name = "perfil-prestador/cambiar-contrasena"
-      options={{href: null}} 
+        name="perfil-prestador/cambiar-contrasena"
+        options={{ href: null }}
+      />
+      <Tabs.Screen
+        name="perfil-prestador/mis-publicaciones"
+        options={{ href: null }}
+      />
+      <Tabs.Screen
+        name="perfil-prestador/crear-publicacion"
+        options={{ href: null }}
       />
     </Tabs>
   );

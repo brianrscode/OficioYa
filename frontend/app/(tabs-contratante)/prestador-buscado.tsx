@@ -3,6 +3,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { API_BASE_URL } from "@/constants/Config";
 import { Ionicons } from "@expo/vector-icons";
+import PublicacionesList from "@/components/PublicacionesList";
 
 export default function PrestadorBuscadoScreen() {
     const { id } = useLocalSearchParams();
@@ -80,6 +81,8 @@ export default function PrestadorBuscadoScreen() {
                 <Text style={styles.sectionTitle}>Miembro desde</Text>
                 <Text style={styles.text}>{new Date(prestador.fecha_registro).toLocaleDateString()}</Text>
             </View>
+
+            <PublicacionesList usuarioId={id as string} />
         </ScrollView>
     );
 }
@@ -88,11 +91,22 @@ const styles = StyleSheet.create({
     container: { flex: 1, padding: 16, backgroundColor: "#F3F4F6" },
     loader: { marginTop: 50 },
     error: { color: "red", textAlign: "center", marginTop: 20 },
+<<<<<<< HEAD
     backButton: { flexDirection: "row", alignItems: "center", marginBottom: 16 },
     backText: { color: "#0A1F57", fontSize: 14, marginLeft: 4 },
     header: { alignItems: "center", marginBottom: 24, marginTop: 4 },
     avatarPlaceholder: { width: 80, height: 80, borderRadius: 40, backgroundColor: "#0A1F57", justifyContent: "center", alignItems: "center", marginBottom: 14 },
     avatarText: { color: "white", fontSize: 36, fontWeight: "bold" },
+=======
+    backButton: { flexDirection: "row", alignItems: "center", marginBottom: 20 },
+    backText: { fontSize: 16, marginLeft: 4 },
+    header: { alignItems: "center", marginBottom: 24 },
+    avatarPlaceholder: {
+        width: 80, height: 80, borderRadius: 40, backgroundColor: "#044081",
+        justifyContent: "center", alignItems: "center", marginBottom: 12
+    },
+    avatarText: { color: "white", fontSize: 32, fontWeight: "bold" },
+>>>>>>> main
     name: { fontSize: 24, fontWeight: "bold", textAlign: "center" },
     username: { fontSize: 16, color: "#666", marginTop: 4 },
     section: { backgroundColor: "#fff", padding: 16, borderRadius: 16, marginBottom: 16, shadowOpacity: 0.08, shadowRadius: 7, elevation: 1 },
