@@ -74,27 +74,19 @@ export default function PerfilScreen() {
       </View>
 
       {/* Cerrar sesión */}
-<<<<<<< HEAD
-      <View style={styles.logoutCard}>
-        <TouchableOpacity style={styles.logoutRow} onPress={logout}>
-          <View style={styles.iconRedBox}>
-            <Ionicons name="exit-outline" size={20} color="#D10A0A" />
-          </View>
-          <Text style={styles.logoutText}>Cerrar sesión</Text>
-=======
-      <View style={styles.card}>
-        <TouchableOpacity style={styles.button} onPress={logout}>
-          <Text style={styles.buttonText}>Cerrar sesión</Text>
->>>>>>> main
-        </TouchableOpacity>
-      </View>
-
+        <View style={styles.logoutCard}>
+          <TouchableOpacity style={styles.logoutRow} onPress={logout}>
+            <View style={styles.iconRedBox}>
+              <Ionicons name="exit-outline" size={20} color="#D10A0A" />
+            </View>
+            <Text style={styles.logoutText}>Cerrar sesión</Text>
+          </TouchableOpacity>
+        </View>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-<<<<<<< HEAD
   container: {flex: 1, backgroundColor: "#F3F4F6", paddingHorizontal: 20, },
   header: { flexDirection: "row", alignItems: "center", paddingVertical: 20,},
   title: {flex: 1, textAlign: "center", fontSize: 22, fontWeight: "700", marginRight: 24, },
@@ -117,29 +109,4 @@ const styles = StyleSheet.create({
   logoutCard: {backgroundColor: "#FFFFFF", borderRadius: 20, paddingVertical: 8, paddingHorizontal: 14, marginBottom: 20,},
   logoutText: {fontSize: 16, color: "#D10A0A", fontWeight: "600",},
   logoutRow: {flexDirection: "row", alignItems: "center", paddingVertical: 16,},
-=======
-  container: { flex: 1, backgroundColor: "#F3F4F6", paddingHorizontal: 20, },
-  header: { flexDirection: "row", alignItems: "center", paddingVertical: 20, },
-  title: { flex: 1, textAlign: "center", fontSize: 22, fontWeight: "700", marginRight: 24, },
-  profileBox: { alignItems: "center", marginTop: 5, marginBottom: 20, },
-  avatar: { width: 130, height: 130, borderRadius: 100, },
-  profileName: { fontSize: 24, fontWeight: "700", marginTop: 12, },
-  profileRole: { color: "#6B7280", fontSize: 16, },
-  card: {
-    backgroundColor: "#FFFFFF", borderRadius: 25, padding: 18, marginBottom: 20, shadowColor: "#000",
-    shadowOpacity: 0.05,
-    shadowRadius: 5,
-    elevation: 2,
-  },
-  row: { flexDirection: "row", alignItems: "center", paddingVertical: 10, },
-  rowText: { flex: 1, fontSize: 16, },
-  iconBlueBox: { backgroundColor: "#DBEAFE", padding: 10, borderRadius: 50, marginRight: 10, },
-  iconRedBox: { backgroundColor: "#FEE2E2", padding: 10, borderRadius: 50, marginRight: 10, },
-  divider: { height: 1, backgroundColor: "#E5E7EB", marginVertical: 6, },
-  button: { marginTop: 20, backgroundColor: "#FF3B30", padding: 12, borderRadius: 8 },
-  buttonText: { color: "#fff", fontWeight: "bold" },
-  dataLabel: { fontSize: 14, color: "#6B7280", fontWeight: "500", marginTop: 8, textAlign: "center" },
-  dataValue: { fontSize: 16, color: "#111827", fontWeight: "600", marginTop: 2, textAlign: "center" },
-  noUserText: { fontSize: 16, color: "#DC2626", fontWeight: "600", textAlign: "center", paddingVertical: 10, },
->>>>>>> main
 });

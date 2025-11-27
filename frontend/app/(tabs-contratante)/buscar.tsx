@@ -5,25 +5,36 @@ import { useAuth } from "@/context/AuthContext";
 import { useNavigation } from "expo-router";
 import { router } from "expo-router";
 import { Image } from "expo-image";
+import { useLocalSearchParams } from "expo-router";
 
 
 export default function BuscarScreen() {
     // TODO: Implementar búsqueda de servicios
     const { accessToken } = useAuth();
     const navigation = useNavigation();
-    const [servicio, setServicio] = useState("");
+    const { servicio: servicioParam } = useLocalSearchParams();
+    const [servicio, setServicio] = useState(
+    servicioParam ? String(servicioParam) : ""
+    );
     const [ciudad, setCiudad] = useState("");
+    useEffect(() => {
+    if (servicioParam) {
+        setServicio(String(servicioParam));
+    }
+    }, [servicioParam]);
+    useEffect(() => {
+    fetchServicios();
+    }, [servicio, ciudad]);
     const [results, setResults] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-
     const endpoint = useMemo(() => {
 
         const url = new URL(`${API_BASE_URL}/api/servicios/buscar/`);
         if (servicio) url.searchParams.set("servicio", servicio);
         if (ciudad) url.searchParams.set("ciudad", ciudad);
         return url.toString();
-    }, [servicio, ciudad]);
+    }, [servicio, ciudad]);        
 
     const fetchServicios = async () => {
         try {
