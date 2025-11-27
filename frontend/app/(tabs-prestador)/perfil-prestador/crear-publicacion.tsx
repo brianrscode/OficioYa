@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, Alert, ActivityIndicator, ScrollView } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, Alert, ActivityIndicator, ScrollView, Platform } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import { useAuth } from "@/context/AuthContext";
 import { API_BASE_URL } from "@/constants/Config";
 import { Ionicons } from "@expo/vector-icons";
+import { authFetch } from "@/utils/authFetch";
 
 export default function CrearPublicacionScreen() {
     const router = useRouter();
@@ -53,16 +54,19 @@ export default function CrearPublicacionScreen() {
             const match = /\.(\w+)$/.exec(filename);
             const type = match ? `image/${match[1]}` : `image`;
 
-            // @ts-ignore: React Native espera un objeto con uri, name y type para archivos
-            formData.append("foto", { uri: image, name: filename, type });
+            if (Platform.OS === "web") {
+                // En web necesitamos convertir la URI a un Blob
+                const response = await fetch(image);
+                const blob = await response.blob();
+                formData.append("foto", blob, filename);
+            } else {
+                // @ts-ignore: React Native espera un objeto con uri, name y type para archivos
+                formData.append("foto", { uri: image, name: filename, type });
+            }
             formData.append("publico", "true");
 
-            const res = await fetch(`${API_BASE_URL}/api/publicaciones/`, {
+            const res = await authFetch(`${API_BASE_URL}/api/publicaciones/`, {
                 method: "POST",
-                headers: {
-                    "Authorization": `Bearer ${accessToken}`,
-                    "Content-Type": "multipart/form-data",
-                },
                 body: formData,
             });
 
@@ -71,9 +75,8 @@ export default function CrearPublicacionScreen() {
                 throw new Error(JSON.stringify(errorData));
             }
 
-            Alert.alert("Éxito", "Publicación creada correctamente", [
-                { text: "OK", onPress: () => router.back() }
-            ]);
+            Alert.alert("Éxito", "Publicación creada correctamente");
+            router.back();
         } catch (e: any) {
             console.error("Error al publicar:", e);
             Alert.alert("Error", "No se pudo crear la publicación. Inténtalo de nuevo.");
@@ -94,7 +97,7 @@ export default function CrearPublicacionScreen() {
 
             <TouchableOpacity style={styles.imagePicker} onPress={pickImage}>
                 {image ? (
-                    <Image source={{ uri: image }} style={styles.image} />
+                    <Image source={{ uri: image }} style={styles.image} resizeMode="cover" />
                 ) : (
                     <View style={styles.placeholder}>
                         <Ionicons name="camera-outline" size={48} color="#ccc" />
@@ -137,7 +140,7 @@ const styles = StyleSheet.create({
     backButton: { padding: 4 },
     title: { fontSize: 20, fontWeight: "bold", color: "#333" },
     imagePicker: { width: "100%", height: 250, borderRadius: 12, overflow: "hidden", backgroundColor: "#f5f5f5", marginBottom: 20, borderWidth: 1, borderColor: "#eee" },
-    image: { width: "100%", height: "100%", resizeMode: "cover" },
+    image: { width: "100%", height: "100%" },
     placeholder: { flex: 1, justifyContent: "center", alignItems: "center" },
     placeholderText: { marginTop: 10, color: "#888", fontSize: 16 },
     form: { flex: 1 },

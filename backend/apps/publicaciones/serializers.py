@@ -3,16 +3,18 @@ from .models import Publicacion
 
 
 class PublicacionSerializer(serializers.ModelSerializer):
-    foto = serializers.SerializerMethodField()
-
     class Meta:
         model = Publicacion
         fields = ['id', 'usuario', 'foto', 'descripcion', 'fecha', 'publico']
         read_only_fields = ['usuario']
 
-    def get_foto(self, obj):
-        """Return the full Cloudinary URL for the foto field"""
-        if obj.foto:
-            return obj.foto.url
-        return None
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
 
+        # Convertir el campo CloudinaryField a una URL simple
+        if instance.foto:
+            rep['foto'] = instance.foto.url
+        else:
+            rep['foto'] = None
+
+        return rep

@@ -9,6 +9,7 @@ interface AuthContextProps {
   login: (username: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   checkSession: () => Promise<void>;
+  refreshAccessToken: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextProps>(null!);
@@ -102,6 +103,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         login,
         logout,
         checkSession,
+        refreshAccessToken,
       }}
     >
       {children}

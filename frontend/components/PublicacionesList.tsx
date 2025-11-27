@@ -54,45 +54,52 @@ export default function PublicacionesList({ usuarioId }: Props) {
         }
     };
 
+    const renderItem = ({ item: pub }: { item: Publicacion }) => (
+        <View style={styles.card}>
+            {pub.foto && (
+                <Image
+                    source={{ uri: pub.foto.startsWith('http') ? pub.foto : `${API_BASE_URL}${pub.foto}` }}
+                    style={styles.image}
+                    resizeMode="cover"
+                />
+            )}
+            <View style={styles.content}>
+                <Text style={styles.description}>{pub.descripcion}</Text>
+                <Text style={styles.date}>
+                    {new Date(pub.fecha).toLocaleDateString()}
+                    {!pub.publico && <Text style={styles.privateTag}> (Privada)</Text>}
+                </Text>
+            </View>
+        </View>
+    );
+
     if (loading) return <ActivityIndicator size="small" color="#0000ff" style={{ marginTop: 20 }} />;
 
-    if (publicaciones.length === 0) {
-        return (
-            <View style={styles.emptyContainer}>
-                <Text style={styles.emptyText}>No hay publicaciones para mostrar.</Text>
-            </View>
-        );
-    }
-
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Publicaciones</Text>
-            {publicaciones.map((pub) => (
-                <View key={pub.id} style={styles.card}>
-                    {pub.foto && (
-                        <Image
-                            source={{ uri: pub.foto.startsWith('http') ? pub.foto : `${API_BASE_URL}${pub.foto}` }}
-                            style={styles.image}
-                            resizeMode="cover"
-                        />
-                    )}
-                    <View style={styles.content}>
-                        <Text style={styles.description}>{pub.descripcion}</Text>
-                        <Text style={styles.date}>
-                            {new Date(pub.fecha).toLocaleDateString()}
-                            {!pub.publico && <Text style={styles.privateTag}> (Privada)</Text>}
-                        </Text>
-                    </View>
+        <FlatList
+            data={publicaciones}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id.toString()}
+            ListHeaderComponent={<Text style={styles.title}>Publicaciones</Text>}
+            ListEmptyComponent={
+                <View style={styles.emptyContainer}>
+                    <Text style={styles.emptyText}>No hay publicaciones para mostrar.</Text>
                 </View>
-            ))}
-        </View>
+            }
+            contentContainerStyle={styles.listContent}
+            style={styles.container}
+        />
     );
 }
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
         marginTop: 20,
         paddingHorizontal: 4,
+    },
+    listContent: {
+        paddingBottom: 80, // Space for FAB
     },
     title: {
         fontSize: 18,
