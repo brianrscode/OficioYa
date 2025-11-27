@@ -75,9 +75,8 @@ export default function CrearPublicacionScreen() {
                 throw new Error(JSON.stringify(errorData));
             }
 
-            Alert.alert("Éxito", "Publicación creada correctamente", [
-                { text: "OK", onPress: () => router.back() }
-            ]);
+            Alert.alert("Éxito", "Publicación creada correctamente");
+            router.back();
         } catch (e: any) {
             console.error("Error al publicar:", e);
             Alert.alert("Error", "No se pudo crear la publicación. Inténtalo de nuevo.");
