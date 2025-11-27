@@ -29,7 +29,7 @@ export default function TabsContratanteLayout() {
   }
 
   return (
-    <Tabs screenOptions={{ headerShown: false, tabBarActiveTintColor: "#007AFF" }}>
+    <Tabs screenOptions={{ headerShown: false, tabBarActiveTintColor: "#0A1F57" }}>
       <Tabs.Screen
         name="index"
         options={{
