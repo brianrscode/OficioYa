@@ -288,8 +288,8 @@ export default function ModificarDatosScreen(){
 
 const styles = StyleSheet.create({
     container:{ flex: 1, backgroundColor: "#ffffffff", paddingHorizontal: 20,},
-    header:{flexDirection: "row", alignItems: "center", paddingVertical: 15,},
-    title:{flex:1, textAlign: "center", fontSize: 20, fontWeight: "700", marginRight: 30},
+    header:{flexDirection: "row", alignItems: "center", paddingVertical: 15, marginTop: 40,},
+    title:{flex:1, textAlign: "center", fontSize: 20, fontWeight: "700", marginRight: 30, marginTop: 4, },
     label:{ fontSize: 16, fontWeight: "600", marginTop:20, marginBottom: 6,},
     labelRow:{flexDirection: "row", justifyContent: "space-between", marginTop: 20, marginBottom: 6,},
     noEditable:{color:"#9CA3AF", fontSize: 14,},

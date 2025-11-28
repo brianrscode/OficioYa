@@ -124,7 +124,7 @@ export default function BuscarScreen() {
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, padding: 16 },
+    container: { flex: 1, padding: 16, paddingTop: 45,},
     filtersRow: { gap: 8 },
     input: { borderWidth: 1, borderColor: "#ddd", borderRadius: 12, padding: 10, backgroundColor: "#ffffff" },
     button: { backgroundColor: "#0A1F57", padding: 12, borderRadius: 8, alignItems: "center" },

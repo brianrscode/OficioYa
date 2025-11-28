@@ -102,8 +102,8 @@ export default function CambiarContrasenaScreen() {
 
 const styles = StyleSheet.create({
   container: {flex: 1,backgroundColor: "#F4F5F7",paddingHorizontal: 20,},
-  header: {flexDirection: "row",alignItems: "center",paddingVertical: 15,},
-  title: {flex: 1,textAlign: "center",fontSize: 20,fontWeight: "700",marginRight: 30,},
+  header: {flexDirection: "row",alignItems: "center",paddingVertical: 15, marginTop: 40,},
+  title: {flex: 1,textAlign: "center",fontSize: 20,fontWeight: "700", marginRight: 30,},
   label: {fontSize: 16,fontWeight: "600",marginTop: 25,marginBottom: 8,},
   inputWrapper: {backgroundColor: "#FFFFFF",borderRadius: 20,borderWidth: 1,borderColor: "#E5E7EB",paddingHorizontal: 18,
     paddingVertical: 14,flexDirection: "row",alignItems: "center",minHeight: 80,},

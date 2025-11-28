@@ -26,7 +26,7 @@ export default function InicioContratanteScreen() {
             const data = await res.json();
             
             // Mostrar máximo 6
-            const primeros = data.slice(0, );
+            const primeros = data.slice(0, 4);
             setServicios(primeros);
         } catch (err: any) {
             setError(err.message);
@@ -73,7 +73,7 @@ export default function InicioContratanteScreen() {
 
 const styles = StyleSheet.create({
     container: { flex: 1, padding: 16, backgroundColor: "#F3F4F6" },
-    title: { fontSize: 20, fontWeight: "700", marginBottom: 16, color: "#0A1F57",},
+    title: { fontSize: 20, fontWeight: "700", marginBottom: 16, color: "#0A1F57", marginTop: 40,},
     error: { color: "red", textAlign: "center", marginBottom: 10 },
     servicesContainer: { flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between", rowGap: 12, marginBottom: 20,},
     serviceButton: {  width: "48%",  backgroundColor: "#ffffff", paddingVertical: 14,  borderRadius: 14, alignItems: "center",
