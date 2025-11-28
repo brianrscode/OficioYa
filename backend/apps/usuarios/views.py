@@ -5,6 +5,7 @@ from rest_framework import generics, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework.parsers import MultiPartParser, FormParser
 
 from .serializers import (
     UsuarioSerializer,
@@ -25,6 +26,7 @@ class RegisterView(generics.CreateAPIView):
     queryset = Usuario.objects.all()
     serializer_class = RegisterSerializer
     permission_classes = [permissions.AllowAny]
+    parser_classes = [MultiPartParser, FormParser]
 
 
 # Login (tokens JWT)
@@ -50,6 +52,7 @@ class UpdateUserView(generics.UpdateAPIView):
     queryset = Usuario.objects.all()
     serializer_class = UpdateUserSerializer
     permission_classes = [permissions.IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser]
 
     def get_object(self):
         return self.request.user

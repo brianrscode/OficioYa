@@ -17,6 +17,11 @@ class UsuarioSerializer(serializers.ModelSerializer):
             'ciudad', 'rol'
         ]
 
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        rep['foto'] = instance.foto.url if instance.foto else None
+        return rep
+
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, min_length=8)
@@ -97,18 +102,13 @@ class UpdateUserSerializer(serializers.ModelSerializer):
             'sexo',
             'fecha_nacimiento',
             'telefono',
-            'email'
+            'email',
+            'foto'
         ]
 
     def update(self, instance, validated_data):
-        instance.nombres = validated_data.get('nombres', instance.nombres)
-        instance.apellido_paterno = validated_data.get('apellido_paterno', instance.apellido_paterno)
-        instance.apellido_materno = validated_data.get('apellido_materno', instance.apellido_materno)
-        instance.username = validated_data.get('username', instance.username)
-        instance.ciudad = validated_data.get('ciudad', instance.ciudad)
-        instance.sexo = validated_data.get('sexo', instance.sexo)
-        instance.fecha_nacimiento = validated_data.get('fecha_nacimiento', instance.fecha_nacimiento)
-        instance.telefono = validated_data.get('telefono', instance.telefono)
-        instance.email = validated_data.get('email', instance.email)
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
         instance.save()
         return instance
