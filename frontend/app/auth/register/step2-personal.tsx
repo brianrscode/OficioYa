@@ -1,10 +1,10 @@
 import { API_BASE_URL } from "@/constants/Config";
 import { useEffect, useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Alert } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { useRegistro } from "@/context/RegisterContext";
 import { router } from "expo-router";
-import { useFonts, PlayfairDisplay_400Regular, PlayfairDisplay_700Bold, } from "@expo-google-fonts/playfair-display";
+import { useFonts, PlayfairDisplay_400Regular, PlayfairDisplay_700Bold } from "@expo-google-fonts/playfair-display";
 
 export default function Step2Personal() {
   const { registro, setRegistro } = useRegistro();
@@ -20,7 +20,6 @@ export default function Step2Personal() {
   useEffect(() => {
     const obtenerCiudades = async () => {
       try {
-
         const res = await fetch(`${API_BASE_URL}/api/ubicacion/ciudades/`);
         const data = await res.json();
         setCiudades(data);
@@ -45,14 +44,35 @@ export default function Step2Personal() {
     );
   }
 
+  // 🔥 VALIDACIÓN
+  const validarCampos = () => {
+    if (
+      !registro.nombres?.trim() ||
+      !registro.apellido_paterno?.trim() ||
+      !registro.apellido_materno?.trim() ||
+      !registro.sexo?.trim() ||
+      !registro.fecha_nacimiento?.trim() ||
+      !registro.ciudad // ciudad debe ser un número válido
+    ) {
+      Alert.alert(
+        "Campos incompletos",
+        "Por favor completa todos los datos personales antes de continuar."
+      );
+      return false;
+    }
+    return true;
+  };
+
   const handleCiudadChange = (valor: number | string, index: number) => {
     let nombre = "";
     let id: number | "" = "";
+
     if (index > 0) {
       id = typeof valor === "string" ? parseInt(valor, 10) : valor;
       const found = ciudades.find((c) => c.id === id);
       nombre = found?.nombre ?? "";
     }
+
     setRegistro({ ...registro, ciudad: id, ciudad_nombre: nombre });
   };
 
@@ -113,7 +133,11 @@ export default function Step2Personal() {
 
       <TouchableOpacity
         style={styles.button}
-        onPress={() => router.push("/auth/register/step3-role")}
+        onPress={() => {
+          if (validarCampos()) {
+            router.push("/auth/register/step3-role");
+          }
+        }}
       >
         <Text style={styles.buttonText}>Continuar</Text>
       </TouchableOpacity>
