@@ -1,5 +1,5 @@
 import { API_BASE_URL } from "@/constants/Config";
-import { Text, ScrollView, Button, View, StyleSheet, Image, TextInput, TouchableOpacity,} from "react-native";
+import { Text, ScrollView, Button, View, StyleSheet, Image, TextInput, TouchableOpacity, Alert} from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { useAuth } from "@/context/AuthContext";
 import React, {useState, useEffect} from "react";
@@ -7,7 +7,7 @@ import { Ionicons } from "@expo/vector-icons";
 import {router} from "expo-router";
 
 export default function ModificarDatosScreen(){
-    const { accessToken} = useAuth();
+    const { accessToken, checkSession} = useAuth();
     
     const[nombres, setNombre] = useState("");
     const[apellidoP, setApellidoP] = useState("");
@@ -19,6 +19,10 @@ export default function ModificarDatosScreen(){
     const[fechaNacimiento, setFechaNacimiento] = useState("");
     const[telefono, setTelefono] = useState("");
     const[correo, setCorreo] = useState("");
+
+    const [errorTelefono, setErrorTelefono] = useState(false);
+    const [errorCorreo, setErrorCorreo] = useState(false);
+    const [errorCiudad, setErrorCiudad] = useState(false);
 
     const loadCiudades = async () =>{
         try{
@@ -71,6 +75,78 @@ export default function ModificarDatosScreen(){
         } catch(error) {
             console.log("Error al traer los datos", error);
         }
+    };
+
+    const guardarDatos = async () =>{
+      if(!accessToken) return;
+
+      let valido = true;
+
+      setErrorTelefono(false);
+      setErrorCorreo(false);
+      setErrorCiudad(false);
+
+      if(!telefono.trim()){
+        setErrorTelefono(true);
+        valido = false;
+      }
+
+      if(!correo.trim()){
+        setErrorCorreo(true);
+        valido = false;
+      }
+
+      if(!ciudadId){
+        setErrorCiudad(true);
+        valido = false;
+      }
+
+      if(!valido){
+        Alert.alert("Debes completar todos los campos requeridos para continuar");
+        return;
+      }
+
+      const telefonoRegex = /^[0-9]{10,}$/;
+      if (!telefonoRegex.test(telefono)) {
+        Alert.alert("El número de telefono ingresado no es válido");
+        return;
+      }
+
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[A-Za-z]{2,}$/;
+      if (!emailRegex.test(correo)) {
+        Alert.alert("El correo ingresado no es válido.");
+        return;
+      }
+
+      try{
+        const url = new URL("/api/usuarios/update/", API_BASE_URL);
+        const body ={
+          telefono: telefono,
+          email: correo,
+          ciudad: ciudadId,
+        };
+        const res = await fetch(url.toString(),{
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify(body),
+        });
+
+        if(!res.ok){
+          console.log("Error al actualizar", await res.json());
+          Alert.alert("Error al actualizar tus datos");
+          return;
+        }
+
+        console.log("Datos actualizados");
+        Alert.alert("Tus datos de actualizaron correctamente");
+        
+        router.push("/perfil");
+      }catch(error){
+        console.log("Error al guardar los datos", error);
+      }
     };
 
     useEffect(() => {
@@ -134,9 +210,9 @@ export default function ModificarDatosScreen(){
         placeholder="username"
       />
 
-      {/* Localidad */}
+      {/* Cuidad */}
       <Text style={styles.label}>Ciudad</Text>
-      <View style={styles.pickerContainer}>
+      <View style={[styles.pickerContainer, errorCiudad && styles.errorInput]}>
         <Picker
           selectedValue={ciudadId}
           onValueChange={(value) => setCiudadId(value)}
@@ -180,9 +256,11 @@ export default function ModificarDatosScreen(){
       {/* Teléfono */}
       <Text style={styles.label}>Teléfono</Text>
       <TextInput
-        style={styles.input}
+        style={[styles.input, errorTelefono && styles.errorInput]}
         value={telefono}
-        onChangeText={setTelefono}
+        onChangeText={(t) => {setTelefono(t);
+          if (t.trim()) setErrorTelefono(false);
+        }}
         placeholder="Número de teléfono"
       />
 
@@ -191,14 +269,16 @@ export default function ModificarDatosScreen(){
         <Text style={styles.label}>Correo electrónico</Text>
       </View>
       <TextInput
-        style={styles.input}
+        style={[styles.input, errorCorreo && styles.errorInput]}
         value={correo}
-        onChangeText={setCorreo}
+        onChangeText={(c) => {setCorreo(c);
+          if(c.trim()) setErrorCorreo(false);        
+        }}
         placeholder="Correo electronico"
       />
 
       {/* Botón Guardar */}
-      <TouchableOpacity style={styles.saveBtn}>
+      <TouchableOpacity style={styles.saveBtn} onPress={guardarDatos}>
         <Text style={styles.saveBtnText}>Guardar Cambios</Text>
       </TouchableOpacity>
 
@@ -228,4 +308,5 @@ const styles = StyleSheet.create({
     pickerContainer: {backgroundColor: "#F9FAFB",borderRadius: 30,borderWidth: 1,
     marginTop: 5,paddingHorizontal: 12,height: 55,justifyContent: "center",},
     picker: {width: "100%",fontSize: 14, height: 20, borderColor:"#FFFFFF"},
+    errorInput: {borderColor: "red", borderWidth: 2},
 })
