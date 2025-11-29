@@ -1,14 +1,17 @@
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image } from "react-native";
 import { useAuth } from "@/context/AuthContext";
 import { Ionicons } from "@expo/vector-icons";
-import { Link, router } from "expo-router";
+import { Link, router, useFocusEffect } from "expo-router";
+import { useCallback } from "react";
 
 export default function PerfilScreen() {
-  const { user, logout } = useAuth();
+  const { user, logout, reloadUser } = useAuth();
 
-  console.log("Datos de usuario: ", user);
-  console.log("Foto de usuario: ", user.foto);
-  console.log("username de usuario: ", user.username);
+  useFocusEffect(
+    useCallback(() => {
+      reloadUser();
+    }, [])
+  );
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 40 }}>

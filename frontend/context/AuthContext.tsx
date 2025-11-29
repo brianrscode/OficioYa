@@ -10,6 +10,7 @@ interface AuthContextProps {
   logout: () => Promise<void>;
   checkSession: () => Promise<void>;
   refreshAccessToken: () => Promise<void>;
+  reloadUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextProps>(null!);
@@ -21,6 +22,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const API_LOGIN = `${API_BASE_URL}/api/usuarios/login/`;
   const API_REFRESH = `${API_BASE_URL}/api/usuarios/refresh/`;
+  const API_ME = `${API_BASE_URL}/api/usuarios/me/`;
 
   // --- LOGIN ---
   const login = async (username: string, password: string) => {
@@ -33,15 +35,39 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (!res.ok) throw new Error("Credenciales incorrectas");
 
     const data = await res.json();
-    console.log("Data login: ", data);
 
     await AsyncStorage.setItem("access", data.access);
     await AsyncStorage.setItem("refresh", data.refresh);
     await AsyncStorage.setItem("user", JSON.stringify(data.user));
-    console.log("Data user: ", data.user);
     setAccessToken(data.access);
     setRefreshToken(data.refresh);
     setUser(data.user);
+  };
+
+  // --- RELOAD USER ---
+  const reloadUser = async () => {
+    try {
+      const storedAccess = await AsyncStorage.getItem("access");
+      if (!storedAccess) return;
+
+      const res = await fetch(API_ME, {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${storedAccess}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (res.ok) {
+        const userData = await res.json();
+        setUser(userData);
+        await AsyncStorage.setItem("user", JSON.stringify(userData));
+      } else {
+        console.error("Error reloading user:", res.status);
+      }
+    } catch (error) {
+      console.error("Error reloading user:", error);
+    }
   };
 
   // --- VALIDAR SESIÓN EXISTENTE ---
@@ -52,7 +78,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const storedUser = await AsyncStorage.getItem("user");
 
       if (storedAccess && storedUser) {
-        console.log("Data parseada: ", JSON.parse(storedUser));
         setAccessToken(storedAccess);
         setRefreshToken(storedRefresh);
         setUser(JSON.parse(storedUser));
@@ -106,6 +131,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         logout,
         checkSession,
         refreshAccessToken,
+        reloadUser,
       }}
     >
       {children}
