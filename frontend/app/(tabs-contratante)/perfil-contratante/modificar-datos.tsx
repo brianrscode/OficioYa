@@ -1,10 +1,11 @@
 import { API_BASE_URL } from "@/constants/Config";
-import { Text, ScrollView, Button, View, StyleSheet, Image, TextInput, TouchableOpacity, Alert} from "react-native";
+import { Text, ScrollView, View, StyleSheet, Image, TextInput, TouchableOpacity, Alert, Platform} from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { useAuth } from "@/context/AuthContext";
 import React, {useState, useEffect} from "react";
 import { Ionicons } from "@expo/vector-icons";
 import {router} from "expo-router";
+import * as ImagePicker from "expo-image-picker";
 
 export default function ModificarDatosScreen(){
     const { accessToken, checkSession} = useAuth();
@@ -24,22 +25,40 @@ export default function ModificarDatosScreen(){
     const [errorCorreo, setErrorCorreo] = useState(false);
     const [errorCiudad, setErrorCiudad] = useState(false);
 
+    const[foto, setFoto]= useState<string | null>(null);
+    const[fotoNueva, setFotoNueva] = useState<string | null>(null);
+
+    const pickImage = async () => {
+     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert("Permiso denegado", "Necesitamos acceso a tu galería para subir fotos.");
+        return;
+      }
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      quality: 0.8,
+    });
+
+    if (!result.canceled) {
+      const uri = result.assets[0].uri;
+      console.log("Foto nueva URI:", uri);
+      setFotoNueva(uri);
+    }
+  };
+
+
     const loadCiudades = async () =>{
         try{
             const url = new URL("/api/ubicacion/ciudades/", API_BASE_URL);
 
             const res = await fetch(url.toString());
             const data = await res.json();
-
             setCiudades(data);
         }catch(error){
             console.log("Error al cargar las ciudades", error);
         }
     };
-
-    useEffect(() => {
-        loadCiudades();
-    }, []);
 
     const loadMe = async() =>{
         if(!accessToken) return;
@@ -71,14 +90,24 @@ export default function ModificarDatosScreen(){
             setTelefono(data.telefono);
             setCorreo(data.email);
             setCiudadId(data.ciudad);
+            setFoto(data.foto || null);
 
         } catch(error) {
             console.log("Error al traer los datos", error);
         }
     };
 
-    const guardarDatos = async () =>{
+    useEffect(() => {
+      loadCiudades();
+    }, []);
+
+    useEffect(() => {
       if(!accessToken) return;
+      loadMe();
+    },[accessToken]);
+
+    const guardarDatos = async () => {
+      if (!accessToken) return;
 
       let valido = true;
 
@@ -86,29 +115,29 @@ export default function ModificarDatosScreen(){
       setErrorCorreo(false);
       setErrorCiudad(false);
 
-      if(!telefono.trim()){
+      if (!telefono.trim()) {
         setErrorTelefono(true);
         valido = false;
       }
 
-      if(!correo.trim()){
+      if (!correo.trim()) {
         setErrorCorreo(true);
         valido = false;
       }
 
-      if(!ciudadId){
+      if (!ciudadId) {
         setErrorCiudad(true);
         valido = false;
       }
 
-      if(!valido){
+      if (!valido) {
         Alert.alert("Debes completar todos los campos requeridos para continuar");
         return;
       }
 
       const telefonoRegex = /^[0-9]{10,}$/;
       if (!telefonoRegex.test(telefono)) {
-        Alert.alert("El número de telefono ingresado no es válido");
+        Alert.alert("El número de teléfono ingresado no es válido");
         return;
       }
 
@@ -118,41 +147,53 @@ export default function ModificarDatosScreen(){
         return;
       }
 
-      try{
-        const url = new URL("/api/usuarios/update/", API_BASE_URL);
-        const body ={
-          telefono: telefono,
-          email: correo,
-          ciudad: ciudadId,
-        };
-        const res = await fetch(url.toString(),{
+      try {
+        const formData = new FormData();
+
+        formData.append("telefono", telefono);
+        formData.append("email", correo);
+        formData.append("ciudad", ciudadId.toString());
+
+        if (fotoNueva) {
+          const filename = fotoNueva.split("/").pop() || "foto.jpg";
+          const match = /\.(\w+)$/.exec(filename);
+          const type = match ? `image/${match[1]}` : `image`;
+
+          if (Platform.OS === "web") {
+            const response = await fetch(fotoNueva);
+            const blob = await response.blob();
+            formData.append("foto", blob, filename);
+          } else {
+            formData.append("foto", {
+              uri: fotoNueva,
+              name: filename,
+              type,
+            });
+          }
+        }
+
+        const res = await fetch(`${API_BASE_URL}/api/usuarios/update/`, {
           method: "PATCH",
           headers: {
-            "Content-Type": "application/json",
             Authorization: `Bearer ${accessToken}`,
           },
-          body: JSON.stringify(body),
+          body: formData,
         });
 
-        if(!res.ok){
-          console.log("Error al actualizar", await res.json());
+        if (!res.ok) {
+          const err = await res.text();
+          console.log("Error al actualizar:", err);
           Alert.alert("Error al actualizar tus datos");
           return;
         }
 
-        console.log("Datos actualizados");
-        Alert.alert("Tus datos de actualizaron correctamente");
-        
+        Alert.alert("Éxito", "Datos actualizados correctamente");
         router.push("/perfil");
-      }catch(error){
-        console.log("Error al guardar los datos", error);
+
+      } catch (error) {
+        console.log("Error al guardar los datos:", error);
       }
     };
-
-    useEffect(() => {
-        if(!accessToken) return;
-        loadMe();
-    },[accessToken]);
 
     const getCiudades = () => {
         const ciudadObj = ciudades.find((c) => c.id === ciudadId);
@@ -170,6 +211,19 @@ export default function ModificarDatosScreen(){
         </TouchableOpacity>
 
         <Text style={styles.title}>Editar Datos Personales</Text>
+      </View>
+
+      {/* Foto */}
+      <View style={{ alignItems: "center", marginTop: 20 }}>
+        <Image
+          source={{ uri: fotoNueva || foto || "https://via.placeholder.com/150" }}
+          style={{ width: 120, height: 120, borderRadius: 70, marginBottom: 10 }}
+        />
+        <TouchableOpacity onPress={pickImage}>
+          <Text style={{ color: "#0A1F57", fontSize: 16, fontWeight: "700" }}>
+            Cambiar foto de perfil
+          </Text>
+        </TouchableOpacity>
       </View>
 
       {/* Nombre */}
