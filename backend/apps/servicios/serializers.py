@@ -10,7 +10,13 @@ class ServicioSerializer(serializers.ModelSerializer):
 
 class PrestadorServiciosSerializer(serializers.ModelSerializer):
     servicio = ServicioSerializer(read_only=True)
+    
+    servicio_id = serializers.PrimaryKeyRelatedField(
+        queryset=Servicio.objects.all(),
+        source='servicio',
+        write_only=True
+    )
 
     class Meta:
         model = PrestadorServicios
-        fields = ['id', 'usuario', 'servicio', 'fecha_registro']
+        fields = ['id', 'usuario', 'servicio', 'servicio_id', 'fecha_registro']
