@@ -63,9 +63,12 @@ export default function Step4Services() {
     );
   }
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.brand}>OficioYa</Text>
+return (
+  <View style={styles.container}>
+    <Text style={styles.brand}>OficioYa</Text>
+
+    {/* WRAPPER PARA BAJAR SOLO EL CONTENIDO */}
+    <View style={styles.content}>
       <Text style={styles.title}>Selecciona los servicios que ofreces</Text>
 
       <FlatList
@@ -90,27 +93,32 @@ export default function Step4Services() {
           </TouchableOpacity>
         )}
       />
-
-      <TouchableOpacity
-        style={[styles.button, seleccionados.length === 0 && { opacity: 0.6 }]}
-        disabled={seleccionados.length === 0}
-        onPress={handleContinuar}
-      >
-        <Text style={styles.buttonText}>Continuar</Text>
-      </TouchableOpacity>
     </View>
-  );
+
+    <TouchableOpacity
+      style={[
+        styles.button,
+        seleccionados.length === 0 && { opacity: 0.6 },
+      ]}
+      disabled={seleccionados.length === 0}
+      onPress={handleContinuar}
+    >
+      <Text style={styles.buttonText}>Continuar</Text>
+    </TouchableOpacity>
+  </View>
+);
 }
 
 const styles = StyleSheet.create({
   loadingContainer: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#F6F7F8", },
-  container: { flex: 1, backgroundColor: "#F6F7F8", paddingHorizontal: 30, paddingTop: 100, },
+  container: { flex: 1, backgroundColor: "#F6F7F8", paddingHorizontal: 30, paddingTop: 10, paddingBottom: 40,},
   brand: { position: "absolute", top: 70, left: 35, fontFamily: "PlayfairDisplay_700Bold", fontSize: 20, color: "#032B44", },
+  content: { marginTop: 90, },
   title: { fontSize: 24, fontFamily: "PlayfairDisplay_700Bold", textAlign: "center", marginBottom: 20, },
   item: { padding: 15, borderWidth: 1, borderColor: "#CFCFCF", borderRadius: 10, marginBottom: 10, backgroundColor: "#FFFFFF", },
   itemSeleccionado: { backgroundColor: "#032B44", borderColor: "#032B44", },
   itemText: { fontSize: 16, fontFamily: "PlayfairDisplay_400Regular", },
   itemTextSeleccionado: { color: "#FFFFFF", },
-  button: { backgroundColor: "#032B44", padding: 15, borderRadius: 10, alignItems: "center", marginTop: 20, },
+  button: { backgroundColor: "#032B44", padding: 15, borderRadius: 10, alignItems: "center", marginTop: 60,},
   buttonText: { color: "#FFFFFF", fontWeight: "bold", fontSize: 16, },
 });
