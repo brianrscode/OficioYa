@@ -55,60 +55,54 @@ export default function Summary() {
     );
   }
 
-  const handleEnviar = async () => {
-    console.log("Datos enviados:\n", registro);
-    if (!aceptarTerminos) {
-      Alert.alert("Atención", "Debes aceptar los términos y condiciones");
+const handleEnviar = async () => {
+  if (!aceptarTerminos) {
+    Alert.alert("Atención", "Debes aceptar los términos y condiciones");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("username", registro.username);
+  formData.append("email", registro.email);
+  formData.append("telefono", registro.telefono || "");
+  formData.append("password", registro.password);
+  formData.append("nombres", registro.nombres);
+  formData.append("apellido_paterno", registro.apellido_paterno);
+  formData.append("apellido_materno", registro.apellido_materno || "");
+  formData.append("sexo", registro.sexo || "");
+  formData.append("fecha_nacimiento", registro.fecha_nacimiento || "");
+  formData.append("ciudad", registro.ciudad || "");
+  formData.append("rol", registro.rol);
+  formData.append("foto", null);
+
+  if (registro.rol === "prestador") {
+    registro.servicios.forEach((id) => {
+      formData.append("servicios", id.toString());
+    });
+  }
+
+  try {
+    const res = await fetch(API_URL, {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!res.ok) {
+      const detail = await res.json().catch(() => null);
+      console.error("Registro fallido:", detail);
+      Alert.alert("Error", JSON.stringify(detail, null, 2));
       return;
     }
 
-    // Construir payload solo con campos aceptados por el backend
-    const payload: any = {
-      username: registro.username,
-      email: registro.email,
-      telefono: registro.telefono || null,
-      password: registro.password,
-      nombres: registro.nombres,
-      apellido_paterno: registro.apellido_paterno,
-      apellido_materno: registro.apellido_materno || null,
-      foto: null,
-      sexo: registro.sexo || null,
-      fecha_nacimiento: registro.fecha_nacimiento || null,
-      ciudad: registro.ciudad || null,
-      rol: registro.rol || 'contratante',
-    };
+    Alert.alert("Éxito", "Tu cuenta ha sido creada correctamente");
+    router.replace("/auth/login");
 
-    if (registro.rol === 'prestador') {
-      payload.servicios = Array.isArray(registro.servicios) ? registro.servicios : [];
-    }
+  } catch (error) {
+    console.error("Error de red:", error);
+    Alert.alert("Error", "No se pudo conectar al servidor");
+  }
+};
 
-    try {
-      const res = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) {
-        let detail: any = null;
-        try { detail = await res.json(); } catch { }
-        console.error("Registro fallido", res.status, detail);
-        const mensajes = detail && typeof detail === 'object'
-          ? Object.entries(detail)
-            .map(([k, v]) => `${k}: ${Array.isArray(v) ? v.join(', ') : v}`)
-            .join("\n")
-          : "No se pudo registrar. Verifica tus datos.";
-        Alert.alert("Error", mensajes);
-        return;
-      }
-
-      Alert.alert("Éxito", "Tu cuenta ha sido creada correctamente");
-      router.replace("/auth/login");
-    } catch (error) {
-      console.error("Error de red al registrar:", error);
-      Alert.alert("Error", "No se pudo conectar al backend. Asegura que el servidor esté activo y la URL sea accesible desde tu dispositivo.");
-    }
-  };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
