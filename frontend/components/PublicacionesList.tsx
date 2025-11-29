@@ -21,9 +21,7 @@ export default function PublicacionesList({ usuarioId }: Props) {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        if (usuarioId) {
-            fetchPublicaciones();
-        }
+        fetchPublicaciones();
     }, [usuarioId]);
 
     const fetchPublicaciones = async () => {
@@ -37,7 +35,12 @@ export default function PublicacionesList({ usuarioId }: Props) {
                 headers["Authorization"] = `Bearer ${token}`;
             }
 
-            const res = await fetch(`${API_BASE_URL}/api/publicaciones/?usuario=${usuarioId}`, {
+            let url = `${API_BASE_URL}/api/publicaciones/`;
+            if (usuarioId) {
+                url += `?usuario=${usuarioId}`;
+            }
+
+            const res = await fetch(url, {
                 headers: headers
             });
 
