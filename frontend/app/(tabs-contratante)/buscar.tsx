@@ -14,16 +14,16 @@ export default function BuscarScreen() {
     const navigation = useNavigation();
     const { servicio: servicioParam } = useLocalSearchParams();
     const [servicio, setServicio] = useState(
-    servicioParam ? String(servicioParam) : ""
+        servicioParam ? String(servicioParam) : ""
     );
     const [ciudad, setCiudad] = useState("");
     useEffect(() => {
-    if (servicioParam) {
-        setServicio(String(servicioParam));
-    }
+        if (servicioParam) {
+            setServicio(String(servicioParam));
+        }
     }, [servicioParam]);
     useEffect(() => {
-    fetchServicios();
+        fetchServicios();
     }, [servicio, ciudad]);
     const [results, setResults] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
@@ -34,7 +34,7 @@ export default function BuscarScreen() {
         if (servicio) url.searchParams.set("servicio", servicio);
         if (ciudad) url.searchParams.set("ciudad", ciudad);
         return url.toString();
-    }, [servicio, ciudad]);        
+    }, [servicio, ciudad]);
 
     const fetchServicios = async () => {
         try {
@@ -100,19 +100,18 @@ export default function BuscarScreen() {
                 renderItem={({ item }) => (
                     <View style={styles.card}>
                         <TouchableOpacity style={styles.cardContent} onPress={() => navigateToPrestadorBuscado(item.id)}>
-                            <View style={styles.avatarPlaceholder}>
-                                <Text style={styles.avatarText}>
-                                    {item.nombres[0]}{item.apellido_paterno[0]}
-                                </Text>
-                            </View>
+                            <Image
+                                source={{ uri: item.foto || "https://imgs.search.brave.com/QSSPOEXA485g-XIleyFoKfUyP_QT2ekHnspkL7f-6rE/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/cGl4YWJheS5jb20v/cGhvdG8vMjAxNy8x/Mi8xNi8wNi80MS9h/dmF0YXItMzAyMjIx/NV82NDAuanBn" }}
+                                style={styles.avatar}
+                            />
                             <View style={styles.info}>
                                 <Text style={styles.title}>{item.prestador}</Text>
                                 <Text style={styles.subtitle}>{item.servicios.join(", ")}</Text>
                                 <Text style={styles.meta}>{item.ciudad}</Text>
                                 <Text style={styles.meta}>{item.nombres} {item.apellido_paterno} {item.apellido_materno}</Text>
                             </View>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.viewButton} onPress={() => navigateToPrestadorBuscado(item.id)} >
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.viewButton} onPress={() => navigateToPrestadorBuscado(item.id)} >
                             <Text style={styles.viewButtonText}>Ver perfil</Text>
                         </TouchableOpacity>
                     </View>
@@ -132,8 +131,10 @@ const styles = StyleSheet.create({
     loader: { marginTop: 24 },
     error: { color: "#c00", marginVertical: 8 },
     list: { paddingVertical: 12, gap: 8 },
-    card: { backgroundColor: "#ffffff", borderRadius: 16, padding: 16, marginBottom: 16, shadowOpacity: 0.05,
-    shadowRadius: 6, shadowOffset: { width: 0, height: 3 }, elevation: 3, },
+    card: {
+        backgroundColor: "#ffffff", borderRadius: 16, padding: 16, marginBottom: 16, shadowOpacity: 0.05,
+        shadowRadius: 6, shadowOffset: { width: 0, height: 3 }, elevation: 3,
+    },
     cardContent: { flexDirection: "row", alignItems: "center", marginBottom: 16, },
     title: { fontSize: 16, fontWeight: "600", marginBottom: 4 },
     subtitle: { color: "#555", marginBottom: 4 },
@@ -142,9 +143,10 @@ const styles = StyleSheet.create({
     id: { fontSize: 12, marginBottom: 4 },
     avatarPlaceholder: { width: 60, height: 60, borderRadius: 50, backgroundColor: "#0A1F57", justifyContent: "center", alignItems: "center", marginBottom: 16 },
     avatarText: { color: "white", fontSize: 27, fontWeight: "bold" },
-    viewButton: { backgroundColor: "#0A1F57", paddingVertical: 10, borderRadius: 30, alignItems: "center",},
-    viewButtonText: { color: "white", fontSize: 15, fontWeight: "600",},
-    info: { flex: 1, justifyContent: "center",},
+    viewButton: { backgroundColor: "#0A1F57", paddingVertical: 10, borderRadius: 30, alignItems: "center", },
+    viewButtonText: { color: "white", fontSize: 15, fontWeight: "600", },
+    info: { flex: 1, justifyContent: "center", },
+    avatar: { width: 60, height: 60, borderRadius: 50, marginBottom: 16 },
 });
 
 

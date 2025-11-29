@@ -59,7 +59,7 @@ class BuscarPrestadoresView(APIView):
             data.append({
                 "id": p.id,
                 "nombres": p.nombres,
-                "foto": p.foto or "",
+                "foto": p.foto.url if p.foto else "",
                 "apellido_paterno": p.apellido_paterno,
                 "apellido_materno": p.apellido_materno,
                 "prestador": p.username,
