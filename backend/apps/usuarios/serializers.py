@@ -81,12 +81,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
         # Agregar datos al response además de access/refresh
-        data['user'] = {
-            "id": self.user.id,
-            "username": self.user.username,
-            "email": self.user.email,
-            "rol": self.user.rol
-        }
+        data['user'] = UsuarioSerializer(self.user).data
         return data
 
 

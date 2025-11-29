@@ -33,11 +33,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (!res.ok) throw new Error("Credenciales incorrectas");
 
     const data = await res.json();
+    console.log("Data login: ", data);
 
     await AsyncStorage.setItem("access", data.access);
     await AsyncStorage.setItem("refresh", data.refresh);
     await AsyncStorage.setItem("user", JSON.stringify(data.user));
-
+    console.log("Data user: ", data.user);
     setAccessToken(data.access);
     setRefreshToken(data.refresh);
     setUser(data.user);
@@ -51,6 +52,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const storedUser = await AsyncStorage.getItem("user");
 
       if (storedAccess && storedUser) {
+        console.log("Data parseada: ", JSON.parse(storedUser));
         setAccessToken(storedAccess);
         setRefreshToken(storedRefresh);
         setUser(JSON.parse(storedUser));

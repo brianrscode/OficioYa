@@ -6,6 +6,10 @@ import { Link, router } from "expo-router";
 export default function PerfilScreen() {
   const { user, logout } = useAuth();
 
+  console.log("Datos de usuario: ", user);
+  console.log("Foto de usuario: ", user.foto);
+  console.log("username de usuario: ", user.username);
+
   return (
     <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 40 }}>
 
@@ -19,7 +23,7 @@ export default function PerfilScreen() {
       </View>
       <View style={styles.profileBox}>
         <Image
-          source={{ uri: user?.foto || "" }}
+          source={{ uri: user?.foto || "https://imgs.search.brave.com/QSSPOEXA485g-XIleyFoKfUyP_QT2ekHnspkL7f-6rE/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/cGl4YWJheS5jb20v/cGhvdG8vMjAxNy8x/Mi8xNi8wNi80MS9h/dmF0YXItMzAyMjIx/NV82NDAuanBn" }}
           style={styles.avatar}
         />
         {user ? (
