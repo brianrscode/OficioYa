@@ -3,6 +3,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { API_BASE_URL } from "@/constants/Config";
 import { Ionicons } from "@expo/vector-icons";
+import { Image } from "expo-image";
 import PublicacionesList from "@/components/PublicacionesList";
 
 export default function PrestadorBuscadoScreen() {
@@ -44,11 +45,10 @@ export default function PrestadorBuscadoScreen() {
             </TouchableOpacity>
 
             <View style={styles.header}>
-                <View style={styles.avatarPlaceholder}>
-                    <Text style={styles.avatarText}>
-                        {prestador.nombres[0]}{prestador.apellido_paterno[0]}
-                    </Text>
-                </View>
+                <Image
+                    source={{ uri: prestador.foto || "https://imgs.search.brave.com/QSSPOEXA485g-XIleyFoKfUyP_QT2ekHnspkL7f-6rE/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/cGl4YWJheS5jb20v/cGhvdG8vMjAxNy8x/Mi8xNi8wNi80MS9h/dmF0YXItMzAyMjIx/NV82NDAuanBn" }}
+                    style={styles.avatar}
+                />
                 <Text style={styles.name}>
                     {prestador.nombres} {prestador.apellido_paterno} {prestador.apellido_materno}
                 </Text>
@@ -104,4 +104,5 @@ const styles = StyleSheet.create({
     tags: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
     tag: { backgroundColor: "#f0f0f0", paddingHorizontal: 12, paddingVertical: 6, borderRadius: 16 },
     tagText: { color: "#333" },
+    avatar: { width: 90, height: 90, borderRadius: 50, marginBottom: 16 },
 });
