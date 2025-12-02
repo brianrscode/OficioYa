@@ -71,6 +71,15 @@ export default function TabsContratanteLayout() {
       name ="perfil-contratante/cambiar-contrasena"
       options={{href: null}}
     />
+    <Tabs.Screen
+        name="ayuda"
+        options={{
+          title: "Ofelia",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="chatbubbles" size={size} color={color} />
+          ),
+        }}
+      />
     </Tabs>
   );
 }

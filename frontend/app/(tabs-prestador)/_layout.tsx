@@ -74,6 +74,15 @@ export default function TabsPrestadorLayout() {
         name="perfil-prestador/crear-publicacion"
         options={{ href: null }}
       />
+      <Tabs.Screen
+        name="ayuda"
+        options={{
+          title: "Ofelia",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="chatbubbles" size={size} color={color} />
+          ),
+        }}
+      />
     </Tabs>
   );
 }
