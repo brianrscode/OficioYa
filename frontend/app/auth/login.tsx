@@ -1,9 +1,9 @@
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image, KeyboardAvoidingView, Platform, ScrollView} from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
 import { Link, router } from "expo-router";
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useFonts, PlayfairDisplay_400Regular, PlayfairDisplay_700Bold } from "@expo-google-fonts/playfair-display";
-
+import { showMessage } from "react-native-flash-message";
 
 export default function LoginScreen() {
   const { login, user } = useAuth();
@@ -19,19 +19,41 @@ export default function LoginScreen() {
   if (!fontsLoaded) return null;
 
   const handleLogin = async () => {
+    if (!username || !password) {
+      showMessage({
+        message: "Campos vacíos",
+        description: "Por favor ingresa tu usuario y contraseña.",
+        type: "warning",
+      });
+      return;
+    }
+
     try {
       await login(username, password);
-      Alert.alert("Bienvenido", "Inicio de sesión correcto");
 
-      if (user?.rol === "prestador") {
-        router.replace("/(tabs-prestador)");
-      } else if (user?.rol === "contratante") {
-        router.replace("/(tabs-contratante)");
-      } else {
-        router.replace("/auth/login");
-      }
+      showMessage({
+        message: "¡Bienvenido!",
+        description: "Inicio de sesión correcto.",
+        type: "success",
+      });
+
+      // Redirección según el rol
+      setTimeout(() => {
+        if (user?.rol === "prestador") {
+          router.replace("/(tabs-prestador)");
+        } else if (user?.rol === "contratante") {
+          router.replace("/(tabs-contratante)");
+        } else {
+          router.replace("/auth/login");
+        }
+      }, 400);
+
     } catch (error) {
-      Alert.alert("Error", "Usuario o contraseña incorrectos");
+      showMessage({
+        message: "Error",
+        description: "Usuario o contraseña incorrectos.",
+        type: "danger",
+      });
     }
   };
 
@@ -87,14 +109,14 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
-scrollContainer: { flexGrow: 1, justifyContent: "center",paddingHorizontal: 30, backgroundColor: "#F6F7F8", },
+  scrollContainer: { flexGrow: 1, justifyContent: "center", paddingHorizontal: 30, backgroundColor: "#F6F7F8", },
   container: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#F6F7F8", paddingHorizontal: 30, },
-  logo: {width: 120, height: 120, marginBottom: 20, resizeMode: "contain", },
+  logo: { width: 120, height: 120, marginBottom: 20, resizeMode: "contain", },
   title: { fontSize: 28, fontFamily: "PlayfairDisplay_700Bold", marginBottom: 25, },
-  label: {alignSelf: "flex-start", marginLeft: 5, marginBottom: 5, color: "#044081", fontWeight: "600", fontFamily: "PlayfairDisplay_400Regular", },
-  input: {width: "100%", borderWidth: 1, borderColor: "#CFCFCF", borderRadius: 10, padding: 12, marginBottom: 15, backgroundColor: "#FFFFFF", },
-  button: {width: "100%", backgroundColor: "#032B44", padding: 15, borderRadius: 10, alignItems: "center", marginTop: 10, },
-  buttonText: {color: "#FFFFFF", fontWeight: "bold", fontSize: 16, },
-  linkSecondary: {color: "#7A7A7A", marginTop: 15, fontFamily: "PlayfairDisplay_400Regular",},
-  linkPrimary: {color: "#044081", marginTop: 8, fontWeight: "500", fontFamily: "PlayfairDisplay_400Regular", },
+  label: { alignSelf: "flex-start", marginLeft: 5, marginBottom: 5, color: "#044081", fontWeight: "600", fontFamily: "PlayfairDisplay_400Regular", },
+  input: { width: "100%", borderWidth: 1, borderColor: "#CFCFCF", borderRadius: 10, padding: 12, marginBottom: 15, backgroundColor: "#FFFFFF", },
+  button: { width: "100%", backgroundColor: "#032B44", padding: 15, borderRadius: 10, alignItems: "center", marginTop: 10, },
+  buttonText: { color: "#FFFFFF", fontWeight: "bold", fontSize: 16, },
+  linkSecondary: { color: "#7A7A7A", marginTop: 15, fontFamily: "PlayfairDisplay_400Regular", },
+  linkPrimary: { color: "#044081", marginTop: 8, fontWeight: "500", fontFamily: "PlayfairDisplay_400Regular", },
 });

@@ -2,6 +2,8 @@ import { Stack, Redirect, usePathname } from "expo-router";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 import { View, ActivityIndicator } from "react-native";
 import { useEffect, useState } from "react";
+import FlashMessage from "react-native-flash-message";
+
 
 function RootNavigation() {
   const { user, checkSession } = useAuth();
@@ -49,6 +51,7 @@ function RootNavigation() {
 export default function RootLayout() {
   return (
     <AuthProvider>
+      <FlashMessage position="top" />
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="auth" />
         <Stack.Screen name="(tabs-contratante)" />

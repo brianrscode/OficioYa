@@ -4,6 +4,7 @@ import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Alert, ActivityIn
 import { useRegistro } from "@/context/RegisterContext";
 import { router } from "expo-router";
 import { useFonts, PlayfairDisplay_400Regular, PlayfairDisplay_700Bold, } from "@expo-google-fonts/playfair-display";
+import FlashMessage, { showMessage } from "react-native-flash-message";
 
 export default function Summary() {
   const { registro } = useRegistro();
@@ -35,6 +36,11 @@ export default function Summary() {
         console.log("contexto", registro);
       } catch (error) {
         console.error("Error al obtener servicios:", error);
+        showMessage({
+          message: "Error",
+          description: "No se pudo conectar al servidor.",
+          type: "danger",
+        });
       } finally {
         setLoadingServicios(false);
       }
@@ -55,53 +61,68 @@ export default function Summary() {
     );
   }
 
-const handleEnviar = async () => {
-  if (!aceptarTerminos) {
-    Alert.alert("Atención", "Debes aceptar los términos y condiciones");
-    return;
-  }
-
-  const formData = new FormData();
-  formData.append("username", registro.username);
-  formData.append("email", registro.email);
-  formData.append("telefono", registro.telefono || "");
-  formData.append("password", registro.password);
-  formData.append("nombres", registro.nombres);
-  formData.append("apellido_paterno", registro.apellido_paterno);
-  formData.append("apellido_materno", registro.apellido_materno || "");
-  formData.append("sexo", registro.sexo || "");
-  formData.append("fecha_nacimiento", registro.fecha_nacimiento || "");
-  formData.append("ciudad", registro.ciudad || "");
-  formData.append("rol", registro.rol);
-  formData.append("foto", null);
-
-  if (registro.rol === "prestador") {
-    registro.servicios.forEach((id) => {
-      formData.append("servicios", id.toString());
-    });
-  }
-
-  try {
-    const res = await fetch(API_URL, {
-      method: "POST",
-      body: formData,
-    });
-
-    if (!res.ok) {
-      const detail = await res.json().catch(() => null);
-      console.error("Registro fallido:", detail);
-      Alert.alert("Error", JSON.stringify(detail, null, 2));
+  const handleEnviar = async () => {
+    if (!aceptarTerminos) {
+      showMessage({
+        message: "Atención",
+        description: "Debes aceptar los términos y condiciones.",
+        type: "warning",
+      });
       return;
     }
 
-    Alert.alert("Éxito", "Tu cuenta ha sido creada correctamente");
-    router.replace("/auth/login");
+    const formData = new FormData();
+    formData.append("username", registro.username);
+    formData.append("email", registro.email);
+    formData.append("telefono", registro.telefono || "");
+    formData.append("password", registro.password);
+    formData.append("nombres", registro.nombres);
+    formData.append("apellido_paterno", registro.apellido_paterno);
+    formData.append("apellido_materno", registro.apellido_materno || "");
+    formData.append("sexo", registro.sexo || "");
+    formData.append("fecha_nacimiento", registro.fecha_nacimiento || "");
+    formData.append("ciudad", registro.ciudad || "");
+    formData.append("rol", registro.rol);
+    formData.append("foto", null);
 
-  } catch (error) {
-    console.error("Error de red:", error);
-    Alert.alert("Error", "No se pudo conectar al servidor");
-  }
-};
+    if (registro.rol === "prestador") {
+      registro.servicios.forEach((id) => {
+        formData.append("servicios", id.toString());
+      });
+    }
+
+    try {
+      const res = await fetch(API_URL, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) {
+        const detail = await res.json().catch(() => null);
+        console.error("Registro fallido:", detail);
+        showMessage({
+          message: "Error",
+          description: JSON.stringify(detail, null, 2),
+          type: "danger",
+        });
+        return;
+      }
+
+      showMessage({
+        message: "Éxito",
+        description: "Tu cuenta ha sido creada correctamente.",
+        type: "success",
+      });
+      router.replace("/auth/login");
+
+    } catch (error) {
+      showMessage({
+        message: "Error",
+        description: "No se pudo conectar al servidor.",
+        type: "danger",
+      });
+    }
+  };
 
 
   return (

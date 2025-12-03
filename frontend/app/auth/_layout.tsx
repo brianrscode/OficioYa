@@ -2,6 +2,7 @@ import { Stack, Redirect } from "expo-router";
 import { useAuth } from "@/context/AuthContext";
 import { View, ActivityIndicator } from "react-native";
 import { RegisterProvider } from "@/context/RegisterContext";
+import FlashMessage from "react-native-flash-message";
 
 export default function AuthLayout() {
   const { user, accessToken } = useAuth();
@@ -11,6 +12,7 @@ export default function AuthLayout() {
     return (
       <RegisterProvider>
         <Stack screenOptions={{ headerShown: false }}>
+          <FlashMessage position="top" />
           <Stack.Screen name="login" />
           <Stack.Screen name="register/step1-account" />
           <Stack.Screen name="register/step2-personal" />
