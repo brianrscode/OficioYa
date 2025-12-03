@@ -6,7 +6,7 @@ Usuario = settings.AUTH_USER_MODEL
 
 class Review(models.Model):
     calificacion = models.IntegerField()
-    descripcion = models.TextField()
+    descripcion = models.TextField(blank=True, null=True)
     fecha = models.DateTimeField(auto_now_add=True)
     calificador = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name="reviews_realizadas")
     calificado = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name="reviews_recibidas")
