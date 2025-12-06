@@ -10,7 +10,8 @@ import { useAuth } from "@/context/AuthContext";
 
 export default function PrestadorBuscadoScreen() {
     const { user, accessToken } = useAuth();
-    const { id } = useLocalSearchParams();
+    const { id, fromQR} = useLocalSearchParams();
+    const llegoPorQR = fromQR === "true";
     const router = useRouter();
 
     const [prestador, setPrestador] = useState<any>(null);
@@ -238,23 +239,29 @@ export default function PrestadorBuscadoScreen() {
             {/* Reseñas */}
             <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Reseñas</Text>
+                {!llegoPorQR &&(
+                    <Text style={{color: "#D00", fontWeight: "600", marginBottom: 10}}>
+                        Debes escanear el QR del prestador para reseñar
+                    </Text>
+                )}
                 <Text style={{ color: "#666" }}>{reviews.length} reseñas</Text>
 
                 {/* BOTÓN PUBLICAR */}
-                <TouchableOpacity
-                    style={styles.postButton}
-                    onPress={() => {
-                        setOpinion(myReview?.descripcion || "");
-                        setCalificacion(myReview?.calificacion || 0);
-                        setModalVisible(true);
-                    }}
-                >
-                    <Ionicons name="create-outline" size={20} color="#fff" />
-                    <Text style={styles.postButtonText}>
-                        {myReview ? "Editar reseña" : "Publicar reseña"}
-                    </Text>
-                </TouchableOpacity>
-
+                {user.id !== prestador.id && llegoPorQR &&(
+                    <TouchableOpacity
+                        style={styles.postButton}
+                        onPress={() => {
+                            setOpinion(myReview?.descripcion || "");
+                            setCalificacion(myReview?.calificacion || 0);
+                            setModalVisible(true);
+                        }}
+                    >
+                        <Ionicons name="create-outline" size={20} color="#fff" />
+                        <Text style={styles.postButtonText}>
+                            {myReview ? "Editar reseña" : "Publicar reseña"}
+                        </Text>
+                    </TouchableOpacity>
+                )}
                 {/* LISTA */}
                 {reviews.length === 0 ? (
                     <Text style={{ color: "#777" }}>Aún no hay reseñas</Text>
