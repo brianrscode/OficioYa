@@ -29,7 +29,7 @@ export default function TabsPrestadorLayout() {
   }
 
   return (
-    <Tabs screenOptions={{ headerShown: false, tabBarActiveTintColor: "#007AFF" }}>
+    <Tabs screenOptions={{ headerShown: false, tabBarActiveTintColor: "#0A1F57" }}>
       <Tabs.Screen
         name="index"
         options={{
