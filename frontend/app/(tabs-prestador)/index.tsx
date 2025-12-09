@@ -1,15 +1,16 @@
+import PublicacionesList from "@/components/PublicacionesList";
 import { View, Text, StyleSheet } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 
 export default function HomeScreen() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Bienvenido a OficioYa</Text>
-      <Text>Añade servicios o gestiona tu perfil desde las pestañas abajo como un PRESTADOR.</Text>
-    </View>
+    <ScrollView style={styles.container}>
+      <PublicacionesList />
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#fff" },
+  container: { flex: 1, padding: 16, backgroundColor: "#F3F4F6" },
   title: { fontSize: 24, fontWeight: "bold", marginBottom: 10 },
 });
