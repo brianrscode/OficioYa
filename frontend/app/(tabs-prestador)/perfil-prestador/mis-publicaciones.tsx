@@ -7,7 +7,6 @@ import {
     TouchableOpacity,
     ScrollView,
     Image,
-    ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "@/context/AuthContext";
@@ -19,46 +18,8 @@ const navigateCrearPublicacion = () => {
 }
 
 export default function MisPublicacionesScreen() {
-    const { user, token } = useAuth();
-    const [publicaciones, setPublicaciones] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
+    const { user } = useAuth();
 
-    const fetchPublicaciones = async () => {
-        try {
-            const url = `${API_BASE_URL}/api/publicaciones/?usuario=${user.id}`;
-
-            const response = await fetch(url, {
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
-
-            if (!response.ok) {
-                console.log("Error HTTP:", response.status, await response.text());
-                return;
-            }
-
-            const data = await response.json();
-            console.log("Datos recibidos:", data);
-
-        } catch (error) {
-            console.log("Error en fetchPublicaciones:", error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchPublicaciones();
-    }, [user, token]);
-
-    if (loading) {
-        return (
-            <View style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color="#005CFB" />
-            </View>
-        );
-    }
 
     return (
         <View style={styles.container}>

@@ -1,5 +1,6 @@
 import { View, Text, Image, StyleSheet, ActivityIndicator, FlatList } from "react-native";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import { useFocusEffect } from "expo-router";
 import { API_BASE_URL } from "@/constants/Config";
 import { useAuth } from "@/context/AuthContext";
 
@@ -20,11 +21,7 @@ export default function PublicacionesList({ usuarioId }: Props) {
     const [publicaciones, setPublicaciones] = useState<Publicacion[]>([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        fetchPublicaciones();
-    }, [usuarioId]);
-
-    const fetchPublicaciones = async () => {
+    const fetchPublicaciones = useCallback(async () => {
         try {
             setLoading(true);
             const headers: HeadersInit = {
@@ -55,7 +52,13 @@ export default function PublicacionesList({ usuarioId }: Props) {
         } finally {
             setLoading(false);
         }
-    };
+    }, [token, usuarioId]);
+
+    useFocusEffect(
+        useCallback(() => {
+            fetchPublicaciones();
+        }, [fetchPublicaciones])
+    );
 
     const renderItem = ({ item: pub }: { item: Publicacion }) => (
         <View style={styles.card}>
