@@ -29,7 +29,7 @@ export default function TabsPrestadorLayout() {
   }
 
   return (
-    <Tabs screenOptions={{ headerShown: false, tabBarActiveTintColor: "#007AFF" }}>
+    <Tabs screenOptions={{ headerShown: false, tabBarActiveTintColor: "#0A1F57" }}>
       <Tabs.Screen
         name="index"
         options={{
@@ -73,6 +73,15 @@ export default function TabsPrestadorLayout() {
       <Tabs.Screen
         name="perfil-prestador/crear-publicacion"
         options={{ href: null }}
+      />
+      <Tabs.Screen
+        name="ayuda"
+        options={{
+          title: "Ofelia",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="chatbubbles" size={size} color={color} />
+          ),
+        }}
       />
     </Tabs>
   );

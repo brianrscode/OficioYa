@@ -263,6 +263,7 @@ export default function ModificarDatosScreen(){
       setCorreo(data.email);
       setCiudadId(data.ciudad);
       setRol(data.rol);
+      setFoto(data.foto)
     } catch (error) {
       console.log("Error al traer los datos:", error);
     }
@@ -297,7 +298,7 @@ export default function ModificarDatosScreen(){
       <View style={{ alignItems: "center", marginTop: 20 }}>
         <Image
           source={{ uri: fotoNueva || foto || "https://via.placeholder.com/150" }}
-          style={{ width: 120, height: 120, borderRadius: 70, marginBottom: 10 }}
+          style={{ width: 120, height: 120, borderRadius: 100, marginBottom: 20,}}
         />
         <TouchableOpacity onPress={pickImage}>
           <Text style={{ color: "#0A1F57", fontSize: 16, fontWeight: "700" }}>
@@ -460,132 +461,25 @@ export default function ModificarDatosScreen(){
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#FFFFFF",
-    paddingHorizontal: 20,
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 15,
-  },
-  title: {
-    flex: 1,
-    textAlign: "center",
-    fontSize: 20,
-    fontWeight: "700",
-    marginRight: 30,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: "600",
-    marginTop: 20,
-    marginBottom: 6,
-  },
-  input: {
-    backgroundColor: "#FFFFFF",
-    paddingHorizontal: 18,
-    paddingVertical: 14,
-    borderRadius: 30,
-    borderWidth: 1,
-    borderColor: "#000000",
-  },
-  inputDisabled: {
-    opacity: 0.5,
-  },
-  textInputValue: {
-    flex: 1,
-    color: "#111826",
-    fontSize: 14,
-  },
-  pickerContainer: {
-    backgroundColor: "#F9FAFB",
-    borderRadius: 30,
-    borderWidth: 1,
-    borderColor: "#000000",
-    marginTop: 5,
-    paddingHorizontal: 12,
-    height: 55,
-    justifyContent: "center",
-  },
-  picker: {
-    width: "100%",
-    color: "#000000",
-  },
-  dateInput: {
-    backgroundColor: "#F9FAFB",
-    paddingHorizontal: 18,
-    paddingVertical: 14,
-    borderRadius: 30,
-    borderWidth: 1,
-    borderColor: "#000000",
-    flexDirection: "row",
-    alignItems: "center",
-  },
-
+  container: { flex: 1, backgroundColor: "#FFFFFF", paddingHorizontal: 20, paddingTop: 25, },
+  header: { flexDirection: "row", alignItems: "center", paddingVertical: 15,},
+  title: { flex: 1, textAlign: "center", fontSize: 20, fontWeight: "700", marginRight: 30,},
+  label: { fontSize: 16, fontWeight: "600", marginTop: 20, marginBottom: 6,},
+  input: { backgroundColor: "#FFFFFF", paddingHorizontal: 18, paddingVertical: 14, borderRadius: 30, borderWidth: 1,},
+  inputDisabled: { opacity: 0.5,},
+  textInputValue: { flex: 1, fontSize: 14,},
+  pickerContainer: { backgroundColor: "#F9FAFB", borderRadius: 30, borderWidth: 1, marginTop: 5, paddingHorizontal: 12, height: 55, justifyContent: "center",},
+  picker: { width: "100%",},
+  dateInput: { backgroundColor: "#F9FAFB", paddingHorizontal: 18, paddingVertical: 14, borderRadius: 30, borderWidth: 1, flexDirection: "row", alignItems: "center",},
   /* Chips */
-  chipContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    marginTop: 10,
-    marginBottom: 10,
-  },
-  chip: {
-    backgroundColor: "#EAF1FF",
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 20,
-    marginRight: 8,
-    marginBottom: 8,
-  },
-  chipText: {
-    color: "#0A1F57",
-    fontWeight: "600",
-    fontSize: 13,
-  },
-
-  addButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginTop: 8,
-  },
-
+  chipContainer: { flexDirection: "row", flexWrap: "wrap", marginTop: 10, marginBottom: 10,},
+  chip: { backgroundColor: "#EAF1FF", paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20, marginRight: 8, marginBottom: 8,},
+  chipText: { color: "#0A1F57", fontWeight: "600", fontSize: 13,},
+  addButton: { flexDirection: "row", alignItems: "center", marginTop: 8,},
   /* Modal */
-  modalOverlay: {
-    position: "absolute",
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: "rgba(0,0,0,0.4)",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  modalContent: {
-    width: "50%",
-    backgroundColor: "#FFFFFF",
-    borderRadius: 10,
-    padding: 10,
-    elevation: 3,
-  },
-  modalTitle: {
-    fontSize: 15,
-    fontWeight: "700",
-    textAlign: "center",
-    marginBottom: 15,
-  },
-
-  saveBtn: {
-    backgroundColor: "#0A1F57",
-    paddingVertical: 20,
-    borderRadius: 30,
-    alignItems: "center",
-    marginTop: 40,
-  },
-  saveBtnText: {
-    color: "#FFFFFF",
-    fontSize: 16,
-    fontWeight: "700",
-  },
+  modalOverlay: { position: "absolute", top: 0, bottom: 0, left: 0, right: 0, backgroundColor: "rgba(0,0,0,0.4)", justifyContent: "center", alignItems: "center",},
+  modalContent: { width: "50%", backgroundColor: "#FFFFFF", borderRadius: 10, padding: 10, elevation: 3,},
+  modalTitle: { fontSize: 15, fontWeight: "700", textAlign: "center", marginBottom: 15,},
+  saveBtn: { backgroundColor: "#0A1F57", paddingVertical: 20, borderRadius: 30, alignItems: "center", marginTop: 40,},
+  saveBtnText: { color: "#FFFFFF", fontSize: 16, fontWeight: "700",},
 });

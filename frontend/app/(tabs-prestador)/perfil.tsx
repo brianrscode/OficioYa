@@ -49,34 +49,43 @@ export default function PerfilScreen() {
       <View style={styles.card}>
 
         {/* Modificar mis datos */}
-        <Link href="/perfil-prestador/modificar-datos" style={styles.row}>
-          <View style={styles.iconBlueBox}>
-            <Ionicons name="pencil" size={20} color="#1D4ED8" />
-          </View>
-          <Text style={styles.rowText}>Modificar mis datos</Text>
-          <Ionicons name="chevron-forward" size={20} color="#999" />
+        <Link href="/perfil-prestador/modificar-datos" asChild>
+          <TouchableOpacity style={styles.row}>
+            <View style={styles.iconBlueBox}>
+              <Ionicons name="pencil" size={20} color="#0A1F57" />
+            </View>
+
+            <Text style={styles.rowText}>Modificar mis datos</Text>
+            <Ionicons name="chevron-forward" size={20} color="#999" />
+          </TouchableOpacity>
         </Link>
 
         <View style={styles.divider} />
 
         {/* Cambiar contraseña */}
-        <Link href={"/perfil-prestador/cambiar-contrasena"}>
-          <View style={styles.iconBlueBox}>
-            <Ionicons name="lock-closed" size={20} color="#1D4ED8" />
-          </View>
-          <Text style={styles.rowText}>Cambiar contraseña</Text>
-          <Ionicons name="chevron-forward" size={20} color="#999" />
+        <Link href="/perfil-prestador/cambiar-contrasena" asChild>
+          <TouchableOpacity style={styles.row}>
+            <View style={styles.iconBlueBox}>
+              <Ionicons name="lock-closed" size={20} color="#0A1F57" />
+            </View>
+
+            <Text style={styles.rowText}>Cambiar contraseña</Text>
+            <Ionicons name="chevron-forward" size={20} color="#999" />
+          </TouchableOpacity>
         </Link>
 
         <View style={styles.divider} />
 
         {/* Mis publicaciones */}
-        <Link href={"/perfil-prestador/mis-publicaciones"}>
-          <View style={styles.iconBlueBox}>
-            <Ionicons name="image" size={20} color="#1D4ED8" />
-          </View>
-          <Text style={styles.rowText}>Mis publicaciones</Text>
-          <Ionicons name="chevron-forward" size={20} color="#999" />
+        <Link href="/perfil-prestador/mis-publicaciones" asChild>
+          <TouchableOpacity style={styles.row}>
+            <View style={styles.iconBlueBox}>
+              <Ionicons name="image" size={20} color="#0A1F57" />
+            </View>
+
+            <Text style={styles.rowText}>Mis publicaciones</Text>
+            <Ionicons name="chevron-forward" size={20} color="#999" />
+          </TouchableOpacity>
         </Link>
       </View>
 
@@ -94,18 +103,18 @@ export default function PerfilScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#F3F4F6", paddingHorizontal: 20, },
+  container: { flex: 1, backgroundColor: "#F3F4F6", paddingHorizontal: 20, paddingTop: 25, },
   header: { flexDirection: "row", alignItems: "center", paddingVertical: 20, },
   title: { flex: 1, textAlign: "center", fontSize: 22, fontWeight: "700", marginRight: 24, },
-  profileBox: { alignItems: "center", marginTop: 5, marginBottom: 20, },
-  avatar: { width: 130, height: 130, borderRadius: 100, },
+  profileBox: { alignItems: "center", marginTop: 0, marginBottom: 20, },
+  avatar: { width: 130, height: 130, borderRadius: 100, marginBottom: 20,},
   profileName: { fontSize: 24, fontWeight: "700", marginTop: 12, },
   profileRole: { color: "#6B7280", fontSize: 16, },
   card: {
-    backgroundColor: "#FFFFFF", borderRadius: 25, padding: 18, marginBottom: 20, shadowOpacity: 0.05,
+    backgroundColor: "#FFFFFF", borderRadius: 25, padding: 18, marginBottom: 25, shadowOpacity: 0.05,
     shadowRadius: 5, elevation: 2,
   },
-  row: { flexDirection: "row", alignItems: "center", paddingVertical: 10, },
+  row: { flexDirection: "row", alignItems: "center", paddingVertical: 9.5, },
   rowText: { flex: 1, fontSize: 16, },
   iconBlueBox: { backgroundColor: "#DBEAFE", padding: 10, borderRadius: 50, marginRight: 10, },
   iconRedBox: { backgroundColor: "#FEE2E2", padding: 10, borderRadius: 50, marginRight: 10, },
