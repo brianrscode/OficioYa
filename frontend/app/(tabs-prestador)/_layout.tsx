@@ -74,6 +74,16 @@ export default function TabsPrestadorLayout() {
         name="perfil-prestador/crear-publicacion"
         options={{ href: null }}
       />
+
+      <Tabs.Screen
+        name="perfil-prestador/mostrar-qr"
+        options={{
+          title: "Mi Código QR",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="qr-code-outline" size={size} color={color} />
+          ),
+        }}
+      />
     </Tabs>
   );
 }
