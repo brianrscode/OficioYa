@@ -71,6 +71,16 @@ export default function TabsContratanteLayout() {
       name ="perfil-contratante/cambiar-contrasena"
       options={{href: null}}
     />
+
+    <Tabs.Screen
+        name="perfil-contratante/escaner-qr"
+        options={{
+          title: "Escaner QR",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="camera-outline" size={size} color={color} />
+          ),
+        }}
+      />
     </Tabs>
   );
 }
