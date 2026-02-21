@@ -9,17 +9,18 @@ class ReviewListCreateView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        qs = Review.objects.all(). order_by("-fecha")
+        qs = Review.objects.all().order_by("-fecha")
         calificado_id = self.request.query_params.get("calificado")
         if calificado_id:
             qs = qs.filter(calificado_id=calificado_id)
 
         return qs
-    
+
     def get_serializer_context(self):
         ctx = super().get_serializer_context()
         ctx["request"] = self.request
-        return ctx 
+        return ctx
+
 
 class ReviewDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ReviewSerializer
@@ -30,7 +31,7 @@ class ReviewDetailView(generics.RetrieveUpdateDestroyAPIView):
         if self.request.user != serializer.instance.calificador:
             raise PermissionDenied("No puede editar reseñas ajenas")
         serializer.save()
-    
+
     def perform_destroy(self, instance):
         if self.request.user != instance.calificador:
             raise PermissionDenied("No puedes eliminar una reseña ajena")
