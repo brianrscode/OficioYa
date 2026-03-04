@@ -1,6 +1,7 @@
 from pathlib import Path
 from dotenv import load_dotenv
 from datetime import timedelta
+import logging
 import os
 import dj_database_url
 
@@ -9,6 +10,8 @@ import dj_database_url
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv()
+
+logger = logging.getLogger(__name__)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -89,7 +92,7 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 if DEBUG:
-    print("Development Database")
+    logger.info("Development Database")
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -101,7 +104,7 @@ if DEBUG:
         }
     }
 else:
-    print("Production Database")
+    logger.info("Production Database")
     DATABASES = {
         'default': dj_database_url.config(
             default=os.getenv('DATABASE_URL'),
@@ -146,8 +149,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
@@ -160,13 +161,14 @@ SPECTACULAR_SETTINGS = {  # Configuración de la API
     'SERVE_INCLUDE_SCHEMA': False,
 }
 
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:3000",
-#     "http://127.0.0.1:3000",
-#     "http://localhost:8000",
-#     "http://127.0.0.1:8000",
-# ]
-CORS_ALLOW_ALL_ORIGINS = True  # Permite todas las orígenes solo para desarrollo
+CORS_ALLOW_ALL_ORIGINS = False  # Permite todas las orígenes solo para desarrollo
+CORS_ALLOWED_ORIGINS = [ # Permite todas las orígenes solo para desarrollo
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+]
+    # "https://oficioya.com",
 
 
 # Simple JWT
@@ -175,6 +177,17 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",  # Todo protegido por defecto
+    ],
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.AnonRateThrottle",
+        "rest_framework.throttling.UserRateThrottle",
+    ],
+    "DEFAULT_THROTTLE_RATES": {
+        "anon": "30/minute",   # Limita peticiones de anónimos
+        "user": "100/minute",  # Limita peticiones de usuarios autenticados
+    },
 }
 
 SIMPLE_JWT = {
@@ -192,4 +205,17 @@ MEDIA_ROOT = BASE_DIR / "media"
 if not DEBUG:
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+    # HTTPS obligatorio
+    SECURE_SSL_REDIRECT = True  # Si se usa Render o un proxy que gestione HTTPS/TLS (como Nginx), False para evitar redirecciones en bucle.
+    SECURE_HSTS_SECONDS = 31536000        # 1 año
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    # Cookies seguras
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    # Protección adicional
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_BROWSER_XSS_FILTER = True
+    X_FRAME_OPTIONS = 'DENY'
 
