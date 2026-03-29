@@ -1,14 +1,14 @@
 import { API_BASE_URL } from "@/constants/Config";
-import { Text, ScrollView, Button, View, StyleSheet, Image, TextInput, TouchableOpacity, Alert, Platform} from "react-native";
+import { Text, ScrollView, Button, View, StyleSheet, Image, TextInput, TouchableOpacity, Alert, Platform } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { useAuth } from "@/context/AuthContext";
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
-import {router} from "expo-router";
+import { router } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
 
-export default function ModificarDatosScreen(){
-    const { accessToken, user } = useAuth();
+export default function ModificarDatosScreen() {
+  const { accessToken, user } = useAuth();
 
   const [nombres, setNombre] = useState("");
   const [apellidoP, setApellidoP] = useState("");
@@ -21,24 +21,24 @@ export default function ModificarDatosScreen(){
   const [telefono, setTelefono] = useState("");
   const [correo, setCorreo] = useState("");
   const [rol, setRol] = useState("");
-  const[foto, setFoto]= useState<string | null>(null);
-  const[fotoNueva, setFotoNueva] = useState<string | null>(null);
+  const [foto, setFoto] = useState<string | null>(null);
+  const [fotoNueva, setFotoNueva] = useState<string | null>(null);
 
   const [misServicios, setMisServicios] = useState<any[]>([]);
   const [todosServicios, setTodosServicios] = useState<any[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [servicioSelect, setServicioSelect] = useState<number | null>(null);
 
-  const[errorCiudad, setErrorCiudad] = useState(false);
-  const[errorTelefono, setErrorTelefono] = useState(false);
-  const[errorCorreo, setErrorCorreo] = useState(false);
+  const [errorCiudad, setErrorCiudad] = useState(false);
+  const [errorTelefono, setErrorTelefono] = useState(false);
+  const [errorCorreo, setErrorCorreo] = useState(false);
 
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== "granted") {
-        Alert.alert("Permiso denegado", "Necesitamos acceso a tu galería para subir fotos.");
-        return;
-      }
+    if (status !== "granted") {
+      Alert.alert("Permiso denegado", "Necesitamos acceso a tu galería para subir fotos.");
+      return;
+    }
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'],
       allowsEditing: true,
@@ -143,93 +143,93 @@ export default function ModificarDatosScreen(){
   };
 
   const guardarDatos = async () => {
-      if (!accessToken) return;
+    if (!accessToken) return;
 
-      let valido = true;
+    let valido = true;
 
-      setErrorTelefono(false);
-      setErrorCorreo(false);
-      setErrorCiudad(false);
+    setErrorTelefono(false);
+    setErrorCorreo(false);
+    setErrorCiudad(false);
 
-      if (!telefono.trim()) {
-        setErrorTelefono(true);
-        valido = false;
-      }
+    if (!telefono.trim()) {
+      setErrorTelefono(true);
+      valido = false;
+    }
 
-      if (!correo.trim()) {
-        setErrorCorreo(true);
-        valido = false;
-      }
+    if (!correo.trim()) {
+      setErrorCorreo(true);
+      valido = false;
+    }
 
-      if (!ciudadId) {
-        setErrorCiudad(true);
-        valido = false;
-      }
+    if (!ciudadId) {
+      setErrorCiudad(true);
+      valido = false;
+    }
 
-      if (!valido) {
-        Alert.alert("Debes completar todos los campos requeridos para continuar");
-        return;
-      }
+    if (!valido) {
+      Alert.alert("Debes completar todos los campos requeridos para continuar");
+      return;
+    }
 
-      const telefonoRegex = /^[0-9]{10,}$/;
-      if (!telefonoRegex.test(telefono)) {
-        Alert.alert("El número de teléfono ingresado no es válido");
-        return;
-      }
+    const telefonoRegex = /^[0-9]{10,}$/;
+    if (!telefonoRegex.test(telefono)) {
+      Alert.alert("El número de teléfono ingresado no es válido");
+      return;
+    }
 
-      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[A-Za-z]{2,}$/;
-      if (!emailRegex.test(correo)) {
-        Alert.alert("El correo ingresado no es válido.");
-        return;
-      }
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[A-Za-z]{2,}$/;
+    if (!emailRegex.test(correo)) {
+      Alert.alert("El correo ingresado no es válido.");
+      return;
+    }
 
-      try {
-        const formData = new FormData();
+    try {
+      const formData = new FormData();
 
-        formData.append("telefono", telefono);
-        formData.append("email", correo);
-        formData.append("ciudad", ciudadId.toString());
+      formData.append("telefono", telefono);
+      formData.append("email", correo);
+      formData.append("ciudad", ciudadId.toString());
 
-        if (fotoNueva) {
-          const filename = fotoNueva.split("/").pop() || "foto.jpg";
-          const match = /\.(\w+)$/.exec(filename);
-          const type = match ? `image/${match[1]}` : `image`;
+      if (fotoNueva) {
+        const filename = fotoNueva.split("/").pop() || "foto.jpg";
+        const match = /\.(\w+)$/.exec(filename);
+        const type = match ? `image/${match[1]}` : `image`;
 
-          if (Platform.OS === "web") {
-            const response = await fetch(fotoNueva);
-            const blob = await response.blob();
-            formData.append("foto", blob, filename);
-          } else {
-            formData.append("foto", {
-              uri: fotoNueva,
-              name: filename,
-              type,
-            });
-          }
+        if (Platform.OS === "web") {
+          const response = await fetch(fotoNueva);
+          const blob = await response.blob();
+          formData.append("foto", blob, filename);
+        } else {
+          formData.append("foto", {
+            uri: fotoNueva,
+            name: filename,
+            type,
+          });
         }
-
-        const res = await fetch(`${API_BASE_URL}/api/usuarios/update/`, {
-          method: "PATCH",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-          body: formData,
-        });
-
-        if (!res.ok) {
-          const err = await res.text();
-          console.log("Error al actualizar:", err);
-          Alert.alert("Error al actualizar tus datos");
-          return;
-        }
-
-        Alert.alert("Éxito", "Datos actualizados correctamente");
-        router.push("/perfil");
-
-      } catch (error) {
-        console.log("Error al guardar los datos:", error);
       }
-    };
+
+      const res = await fetch(`${API_BASE_URL}/api/usuarios/update/`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: formData,
+      });
+
+      if (!res.ok) {
+        const err = await res.text();
+        console.log("Error al actualizar:", err);
+        Alert.alert("Error al actualizar tus datos");
+        return;
+      }
+
+      Alert.alert("Éxito", "Datos actualizados correctamente");
+      router.push("/perfil");
+
+    } catch (error) {
+      console.log("Error al guardar los datos:", error);
+    }
+  };
 
   const loadMe = async () => {
     if (!accessToken) return;

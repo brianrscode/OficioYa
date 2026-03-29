@@ -1,5 +1,4 @@
-from rest_framework import generics
-from rest_framework.permissions import AllowAny
+from rest_framework import generics, permissions
 from .models import Servicio, PrestadorServicios
 from .serializers import ServicioSerializer, PrestadorServiciosSerializer
 from rest_framework.views import APIView
@@ -12,17 +11,19 @@ from .services.strategies.strategy_rating import StrategyRating
 from apps.usuarios.models import Usuario
 
 class ServicioListCreateView(generics.ListCreateAPIView):
+    permission_classes = [permissions.AllowAny]
     queryset = Servicio.objects.all()
     serializer_class = ServicioSerializer
 
 
 class PrestadorServiciosListCreateView(generics.ListCreateAPIView):
+    permission_classes = [permissions.AllowAny]
     queryset = PrestadorServicios.objects.all()
     serializer_class = PrestadorServiciosSerializer
 
 
 class BuscarPrestadoresView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [permissions.AllowAny]
     def get(self, request):
         servicio_query = request.query_params.get("servicio", "")
         ciudad_query = request.query_params.get("ciudad", "")
@@ -72,7 +73,7 @@ class BuscarPrestadoresView(APIView):
 
 
 class PrestadorDetailView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [permissions.AllowAny]
 
     def get(self, request, pk):
         try:
