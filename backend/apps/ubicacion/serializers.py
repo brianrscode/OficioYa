@@ -5,7 +5,7 @@ from .models import Pais, Estado, Ciudad
 class PaisSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pais
-        fields = ['id', 'nombre']
+        fields = ["id", "nombre"]
 
 
 class EstadoSerializer(serializers.ModelSerializer):
@@ -13,7 +13,7 @@ class EstadoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Estado
-        fields = ['id', 'nombre', 'pais']
+        fields = ["id", "nombre", "pais"]
 
 
 class CiudadSerializer(serializers.ModelSerializer):
@@ -21,4 +21,4 @@ class CiudadSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Ciudad
-        fields = ['id', 'nombre', 'estado']
+        fields = ["id", "nombre", "estado"]

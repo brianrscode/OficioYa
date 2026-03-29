@@ -12,53 +12,69 @@ class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
         fields = [
-            'id', 'username', 'email', 'telefono', 'nombres', 'apellido_paterno',
-            'apellido_materno', 'foto', 'sexo', 'fecha_nacimiento',
-            'ciudad', 'rol'
+            "id",
+            "username",
+            "email",
+            "telefono",
+            "nombres",
+            "apellido_paterno",
+            "apellido_materno",
+            "foto",
+            "sexo",
+            "fecha_nacimiento",
+            "ciudad",
+            "rol",
         ]
 
     def to_representation(self, instance):
         rep = super().to_representation(instance)
-        rep['foto'] = instance.foto.url if instance.foto else None
+        rep["foto"] = instance.foto.url if instance.foto else None
         return rep
 
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, min_length=8)
     servicios = serializers.ListField(
-        child=serializers.IntegerField(),
-        required=False,
-        write_only=True
+        child=serializers.IntegerField(), required=False, write_only=True
     )
 
     class Meta:
         model = Usuario
         fields = [
-            'username', 'email', 'telefono', 'password',
-            'nombres', 'apellido_paterno', 'apellido_materno',
-            'foto', 'sexo', 'fecha_nacimiento', 'ciudad', 'rol',
-            'servicios'
+            "username",
+            "email",
+            "telefono",
+            "password",
+            "nombres",
+            "apellido_paterno",
+            "apellido_materno",
+            "foto",
+            "sexo",
+            "fecha_nacimiento",
+            "ciudad",
+            "rol",
+            "servicios",
         ]
 
     def create(self, validated_data):
-        servicios = validated_data.pop('servicios', [])
+        servicios = validated_data.pop("servicios", [])
         user = Usuario.objects.create_user(
-            username=validated_data['username'],
-            email=validated_data['email'],
-            telefono=validated_data.get('telefono', None),
-            password=validated_data['password'],
-            nombres=validated_data.get('nombres', ''),
-            apellido_paterno=validated_data.get('apellido_paterno', ''),
-            apellido_materno=validated_data.get('apellido_materno', ''),
-            foto=validated_data.get('foto', None),
-            sexo=validated_data.get('sexo', ''),
-            fecha_nacimiento=validated_data.get('fecha_nacimiento', None),
-            ciudad=validated_data.get('ciudad', None),
-            rol=validated_data.get('rol', 'contratante')
+            username=validated_data["username"],
+            email=validated_data["email"],
+            telefono=validated_data.get("telefono", None),
+            password=validated_data["password"],
+            nombres=validated_data.get("nombres", ""),
+            apellido_paterno=validated_data.get("apellido_paterno", ""),
+            apellido_materno=validated_data.get("apellido_materno", ""),
+            foto=validated_data.get("foto", None),
+            sexo=validated_data.get("sexo", ""),
+            fecha_nacimiento=validated_data.get("fecha_nacimiento", None),
+            ciudad=validated_data.get("ciudad", None),
+            rol=validated_data.get("rol", "contratante"),
         )
 
         # Si el usuario es prestador, registrar servicios
-        if user.rol == 'prestador' and servicios:
+        if user.rol == "prestador" and servicios:
             for servicio_id in servicios:
                 try:
                     servicio = Servicio.objects.get(id=servicio_id)
@@ -74,14 +90,14 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def get_token(cls, user):
         token = super().get_token(user)
         # Agregar datos personalizados al token
-        token['username'] = user.username
-        token['rol'] = user.rol
+        token["username"] = user.username
+        token["rol"] = user.rol
         return token
 
     def validate(self, attrs):
         data = super().validate(attrs)
         # Agregar datos al response además de access/refresh
-        data['user'] = UsuarioSerializer(self.user).data
+        data["user"] = UsuarioSerializer(self.user).data
         return data
 
 
@@ -89,16 +105,16 @@ class UpdateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
         fields = [
-            'nombres',
-            'apellido_paterno',
-            'apellido_materno',
-            'username',
-            'ciudad',
-            'sexo',
-            'fecha_nacimiento',
-            'telefono',
-            'email',
-            'foto'
+            "nombres",
+            "apellido_paterno",
+            "apellido_materno",
+            "username",
+            "ciudad",
+            "sexo",
+            "fecha_nacimiento",
+            "telefono",
+            "email",
+            "foto",
         ]
 
     def update(self, instance, validated_data):

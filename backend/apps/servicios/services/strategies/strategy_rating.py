@@ -6,5 +6,5 @@ class StrategyRating(SearchStrategy):
     def ordenar(self, queryset):
         # Ordena por calificación promedio de reviews recibidas por el usuario
         return queryset.annotate(
-            avg_calificacion=Avg('reviews_recibidas__calificacion')
-        ).order_by('-avg_calificacion')
+            avg_calificacion=Avg("reviews_recibidas__calificacion")
+        ).order_by("-avg_calificacion")

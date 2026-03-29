@@ -1,5 +1,4 @@
 from .strategies.strategy_rating import StrategyRating
-from .strategies.strategy_ciudad import StrategyCiudad
 
 
 class SearchService:

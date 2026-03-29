@@ -10,6 +10,7 @@ from .services.strategies.strategy_rating import StrategyRating
 
 from apps.usuarios.models import Usuario
 
+
 class ServicioListCreateView(generics.ListCreateAPIView):
     permission_classes = [permissions.AllowAny]
     queryset = Servicio.objects.all()
@@ -24,6 +25,7 @@ class PrestadorServiciosListCreateView(generics.ListCreateAPIView):
 
 class BuscarPrestadoresView(APIView):
     permission_classes = [permissions.AllowAny]
+
     def get(self, request):
         servicio_query = request.query_params.get("servicio", "")
         ciudad_query = request.query_params.get("ciudad", "")
@@ -39,14 +41,16 @@ class BuscarPrestadoresView(APIView):
         # Base queryset: Usuarios que son prestadores (tienen servicios ofrecidos)
         # Usamos distinct() para evitar duplicados si el filtro por servicio hace match múltiple
         queryset = Usuario.objects.filter(servicios_ofrecidos__isnull=False).distinct()
-        queryset = queryset.select_related("ciudad").prefetch_related("servicios_ofrecidos__servicio")
+        queryset = queryset.select_related("ciudad").prefetch_related(
+            "servicios_ofrecidos__servicio"
+        )
 
         if servicio_query:
             queryset = queryset.filter(
-                Q(servicios_ofrecidos__servicio__nombre__icontains=servicio_query) |
-                Q(username__icontains=servicio_query) |
-                Q(nombres__icontains=servicio_query) |
-                Q(apellido_paterno__icontains=servicio_query)
+                Q(servicios_ofrecidos__servicio__nombre__icontains=servicio_query)
+                | Q(username__icontains=servicio_query)
+                | Q(nombres__icontains=servicio_query)
+                | Q(apellido_paterno__icontains=servicio_query)
             ).distinct()
 
         if ciudad_query:
@@ -57,17 +61,19 @@ class BuscarPrestadoresView(APIView):
         data = []
         for p in prestadores:
             servicios_lista = [ps.servicio.nombre for ps in p.servicios_ofrecidos.all()]
-            data.append({
-                "id": p.id,
-                "nombres": p.nombres,
-                "foto": p.foto.url if p.foto else "",
-                "apellido_paterno": p.apellido_paterno,
-                "apellido_materno": p.apellido_materno,
-                "prestador": p.username,
-                "servicios": servicios_lista,
-                "fecha_registro": p.date_joined,
-                "ciudad": p.ciudad.nombre if p.ciudad else ""
-            })
+            data.append(
+                {
+                    "id": p.id,
+                    "nombres": p.nombres,
+                    "foto": p.foto.url if p.foto else "",
+                    "apellido_paterno": p.apellido_paterno,
+                    "apellido_materno": p.apellido_materno,
+                    "prestador": p.username,
+                    "servicios": servicios_lista,
+                    "fecha_registro": p.date_joined,
+                    "ciudad": p.ciudad.nombre if p.ciudad else "",
+                }
+            )
 
         return Response(data)
 
@@ -80,7 +86,10 @@ class PrestadorDetailView(APIView):
             p = Usuario.objects.get(pk=pk)
             # Verificar que sea prestador (opcional, pero recomendado)
             if not p.servicios_ofrecidos.exists():
-                 return Response({"error": "Este usuario no es un prestador de servicios"}, status=404)
+                return Response(
+                    {"error": "Este usuario no es un prestador de servicios"},
+                    status=404,
+                )
 
             servicios_lista = [ps.servicio.nombre for ps in p.servicios_ofrecidos.all()]
 
@@ -94,8 +103,10 @@ class PrestadorDetailView(APIView):
                 "servicios": servicios_lista,
                 "fecha_registro": p.date_joined,
                 "ciudad": p.ciudad.nombre if p.ciudad else "",
-                "telefono": getattr(p, 'telefono', 'No disponible'), # Asumiendo que existe el campo, si no usar getattr
-                "email": p.email
+                "telefono": getattr(
+                    p, "telefono", "No disponible"
+                ),  # Asumiendo que existe el campo, si no usar getattr
+                "email": p.email,
             }
             return Response(data)
         except Usuario.DoesNotExist:

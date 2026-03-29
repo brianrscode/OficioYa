@@ -6,3 +6,4 @@ class SearchStrategy(ABC):
     def ordenar(self, lista):
         """Ordena la lista de prestadores según la estrategia."""
         pass
+

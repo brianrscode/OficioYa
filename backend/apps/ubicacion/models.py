@@ -13,7 +13,7 @@ class Estado(models.Model):
     pais = models.ForeignKey(Pais, on_delete=models.CASCADE, related_name="estados")
 
     class Meta:
-        unique_together = ('nombre', 'pais')
+        unique_together = ("nombre", "pais")
 
     def __str__(self):
         return f"{self.nombre}, {self.pais.nombre}"
@@ -21,10 +21,12 @@ class Estado(models.Model):
 
 class Ciudad(models.Model):
     nombre = models.CharField(max_length=100)
-    estado = models.ForeignKey(Estado, on_delete=models.CASCADE, related_name="ciudades")
+    estado = models.ForeignKey(
+        Estado, on_delete=models.CASCADE, related_name="ciudades"
+    )
 
     class Meta:
-        unique_together = ('nombre', 'estado')
+        unique_together = ("nombre", "estado")
 
     def __str__(self):
         return f"{self.nombre}, {self.estado.nombre}"

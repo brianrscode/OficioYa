@@ -3,7 +3,7 @@ from .views import PaisListCreateView, EstadoListCreateView, CiudadListCreateVie
 
 
 urlpatterns = [
-    path('paises/', PaisListCreateView.as_view(), name='paises-list-create'),
-    path('estados/', EstadoListCreateView.as_view(), name='estados-list-create'),
-    path('ciudades/', CiudadListCreateView.as_view(), name='ciudades-list-create'),
+    path("paises/", PaisListCreateView.as_view(), name="paises-list-create"),
+    path("estados/", EstadoListCreateView.as_view(), name="estados-list-create"),
+    path("ciudades/", CiudadListCreateView.as_view(), name="ciudades-list-create"),
 ]

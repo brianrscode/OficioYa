@@ -5,9 +5,10 @@ from cloudinary.models import CloudinaryField
 
 Usuario = settings.AUTH_USER_MODEL
 
+
 class Publicacion(models.Model):
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    foto = CloudinaryField('publicaciones')
+    foto = CloudinaryField("publicaciones")
     descripcion = models.TextField()
     fecha = models.DateTimeField(auto_now_add=True)
     publico = models.BooleanField(default=True)

@@ -13,6 +13,7 @@ API de OficioYa construida con Django + Django REST Framework.
 ```bash
 git clone https://github.com/brianrscode/OficioYa.git
 ```
+
 ### 1.1) Entrar al directorio
 
 ```bash
@@ -146,24 +147,28 @@ uv run python manage.py runserver
 ```
 
 ## Notas
+
 - Si usas Docker, no necesitas instalar Python localmente (el contenedor ya usa Python 3.13).
 - Si ejecutas sin Docker, usa `uv` para [instalar Python](https://docs.astral.sh/uv/guides/install-python/ "Instalar versiones de Python") 3.13.12 (o compatible) y luego corre `uv sync`.
 - `apps/ubicacion` y `apps/servicios` cargan datos iniciales con señales al migrar.
 - Asegúrate de no versionar `.env` (ya está ignorado por `.gitignore`).
 
-
 ## Conectar pgAdmin a contenedor PostgreSQL
+
 ### 1) Levantar la aplicación
+
 ```bash
 ./run up-build
 ```
 
 ### 2) Conectar pgAdmin a contenedor PostgreSQL
+
 #### 2.1 Agregar nuevo servidor
 
 <img src="imgs/1.png" alt="Agregar servidor" width="300" height="auto">
 
 #### 2.2 Llenar los datos
+
 2.2.1 En el apartado "General" se agrega el nombre del servidor
 
 <img src="imgs/2.png" alt="Nombre servidor" width="300" height="auto">
