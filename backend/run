@@ -1,0 +1,102 @@
+#!/usr/bin/env bash
+set -e
+
+COMPOSE="docker compose"
+MANAGE="docker compose exec backend uv run python manage.py"
+
+print_help() {
+  cat <<'EOF'
+Comandos disponibles:
+  ./make up              # Levanta contenedores
+  ./make up-build        # Levanta y reconstruye imagen
+  ./make down            # Detiene contenedores
+  ./make down-v          # Detiene y elimina volumenes
+  ./make logs            # Muestra logs en tiempo real
+  ./make ps              # Estado de servicios
+  ./make restart         # Reinicia contenedores
+  ./make bash            # Shell del contenedor backend
+  ./make check           # Django system check
+  ./make test            # Ejecuta tests
+  ./make migrate         # Aplica migraciones
+  ./make makemigrations  # Crea nuevas migraciones
+  ./make superuser       # Crea superusuario
+  ./make shell           # Abre shell de Django
+  ./make collectstatic   # Recolecta estaticos
+  ./make dj <comando>    # Comando manage.py personalizado
+
+Ejemplo:
+  ./make dj showmigrations
+EOF
+}
+
+if [ $# -eq 0 ]; then
+  print_help
+  exit 0
+fi
+
+command="$1"
+shift || true
+
+case "$command" in
+  help)
+    print_help
+    ;;
+  up)
+    $COMPOSE up
+    ;;
+  up-build)
+    $COMPOSE up --build
+    ;;
+  down)
+    $COMPOSE down
+    ;;
+  down-v)
+    $COMPOSE down -v
+    ;;
+  logs)
+    $COMPOSE logs -f
+    ;;
+  ps)
+    $COMPOSE ps
+    ;;
+  restart)
+    $COMPOSE restart
+    ;;
+  bash)
+    $COMPOSE exec backend sh
+    ;;
+  check)
+    $MANAGE check
+    ;;
+  test)
+    $MANAGE test
+    ;;
+  migrate)
+    $MANAGE migrate
+    ;;
+  makemigrations)
+    $MANAGE makemigrations
+    ;;
+  superuser)
+    $MANAGE createsuperuser
+    ;;
+  shell)
+    $MANAGE shell
+    ;;
+  collectstatic)
+    $MANAGE collectstatic --noinput
+    ;;
+  dj)
+    if [ $# -eq 0 ]; then
+      echo "Error: falta comando para 'dj'."
+      echo "Uso: ./make dj <comando_manage.py>"
+      exit 1
+    fi
+    $MANAGE "$@"
+    ;;
+  *)
+    echo "Error: comando desconocido '$command'"
+    print_help
+    exit 1
+    ;;
+esac

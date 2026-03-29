@@ -62,6 +62,27 @@ Esto levanta:
 
 El contenedor backend espera a que PostgreSQL esté disponible y ejecuta migraciones automáticamente.
 
+### 3.1) ¿Cuándo usar `--build`?
+
+Usa `docker compose up --build` cuando cambies algo que afecta la imagen del contenedor, por ejemplo:
+
+- `Dockerfile`
+- `pyproject.toml` o `uv.lock`
+- código del backend (porque el proyecto se copia dentro de la imagen)
+
+Si no hiciste esos cambios y solo quieres volver a levantar servicios, usa:
+
+```bash
+docker compose up
+```
+
+Para trabajo diario, también puedes usar segundo plano:
+
+```bash
+docker compose up -d
+docker compose up -d --build
+```
+
 ## 4) Verificar que funciona
 
 - API base: `http://127.0.0.1:8000/`
@@ -74,11 +95,44 @@ El contenedor backend espera a que PostgreSQL esté disponible y ejecuta migraci
 # Ver logs
 docker compose logs -f
 
+# Ejecutar en segundo plano
+docker compose up -d
+
+# Ejecutar en segundo plano reconstruyendo imagen
+docker compose up -d --build
+
 # Detener contenedores
 docker compose down
 
 # Detener y borrar volúmenes (reinicia base de datos)
 docker compose down -v
+```
+
+## 6) Flujo recomendado con script `run`
+
+- Para evitar errores al escribir comandos largos, usa los atajos del script `run`.
+- En Windows PowerShell, puedes usar `bash run <comando>`.
+- No es necesario detener los contenedores para ejecutar comandos de Django. En otra terminal puedes correr:
+
+```bash
+# Levantar servicios
+./run up-build
+
+# Crear y aplicar migraciones
+./run runmigrations
+./run migrate
+
+# Crear superusuario
+./run superuser
+
+# Ver logs
+./run logs
+```
+
+También puedes ejecutar cualquier comando de Django así:
+
+```bash
+./run dj showmigrations
 ```
 
 ## Ejecución sin Docker (opcional)
