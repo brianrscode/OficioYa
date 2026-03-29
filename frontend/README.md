@@ -1,50 +1,75 @@
-# Welcome to your Expo app 👋
+# OficioYa Frontend
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Aplicacion movil de OficioYa construida con Expo + React Native (Expo Router).
 
-## Get started
+## Requisitos
 
-1. Install dependencies
+- [Node.js](https://nodejs.org/) 20 o superior (incluye npm)
+- (Opcional) Expo Go en tu celular para pruebas rapidas
+- Backend de OficioYa corriendo localmente (por defecto en `http://127.0.0.1:8000`)
 
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## 1) Clonar el repositorio
 
 ```bash
-npm run reset-project
+git clone https://github.com/brianrscode/OficioYa.git
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### 1.1) Entrar al directorio
 
-## Learn more
+```bash
+cd OficioYa/frontend
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+## 2) Instalar dependencias
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```bash
+npm install
+```
 
-## Join the community
+## 3) Configurar la URL del backend
 
-Join our community of developers creating universal apps.
+El frontend consume la API usando `API_BASE_URL` en `constants/Config.ts`.
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Valor actual:
+
+```ts
+export const API_BASE_URL = "http://127.0.0.1:8000";
+```
+
+Si usas otro host/puerto o un backend remoto, actualiza esa constante.
+
+## 4) Ejecutar la app
+
+```bash
+# Inicia Metro/Expo
+npm run start
+```
+
+Comandos utiles:
+
+```bash
+# Abrir en Android
+npm run android
+
+# Abrir en iOS (solo macOS)
+npm run ios
+
+# Abrir en navegador
+npm run web
+
+# Linter
+npm run lint
+```
+
+## 5) Flujo recomendado en local
+
+1. Levanta el backend (ver `../backend/README.md`).
+2. Verifica que la API responda en `http://127.0.0.1:8000/`.
+3. Inicia el frontend con `npm run start`.
+4. Abre en Expo Go, emulador Android/iOS o Web.
+
+## Solucion de problemas
+
+- Error de red o peticiones fallidas: revisa `API_BASE_URL` y que el backend este encendido.
+- Cambios no reflejados: reinicia Metro con `npm run start`.
+- Problemas de dependencias: elimina `node_modules` y ejecuta `npm install` de nuevo.
