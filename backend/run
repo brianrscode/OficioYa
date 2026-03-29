@@ -47,6 +47,12 @@ case "$command" in
   up-build)
     $COMPOSE up --build
     ;;
+  up-d)
+    $COMPOSE up -d
+    ;;
+  up-build-d)
+    $COMPOSE up -d --build
+    ;;
   down)
     $COMPOSE down
     ;;
