@@ -150,3 +150,34 @@ uv run python manage.py runserver
 - Si ejecutas sin Docker, usa `uv` para [instalar Python](https://docs.astral.sh/uv/guides/install-python/ "Instalar versiones de Python") 3.13.12 (o compatible) y luego corre `uv sync`.
 - `apps/ubicacion` y `apps/servicios` cargan datos iniciales con señales al migrar.
 - Asegúrate de no versionar `.env` (ya está ignorado por `.gitignore`).
+
+
+## Conectar pgAdmin a contenedor PostgreSQL
+### 1) Levantar la aplicación
+```bash
+./run up-build
+```
+
+### 2) Conectar pgAdmin a contenedor PostgreSQL
+#### 2.1 Agregar nuevo servidor
+
+<img src="imgs/1.png" alt="Agregar servidor" width="300" height="auto">
+
+#### 2.2 Llenar los datos
+2.2.1 En el apartado "General" se agrega el nombre del servidor
+
+<img src="imgs/2.png" alt="Nombre servidor" width="300" height="auto">
+
+2.2.2 En el apartado "Connection" se agregan los datos de conexión a la base de datos
+
+<img src="imgs/3.png" alt="Conexión" width="300" height="auto">
+
+- Host: `localhost`
+- Port: `5433`
+- Database: `oficio_ya`
+- User: `tu_usuario`
+- Password: `tu_contraseña`
+
+### 3) Final
+
+<img src="imgs/4.png" alt="Final" width="300" height="auto">
