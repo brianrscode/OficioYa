@@ -32,11 +32,12 @@ class ReviewSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         request = self.context["request"]
+        calificado = attrs.get("calificado")
+
+        if calificado and request.user == calificado:
+            raise serializers.ValidationError("No puedes calificarte a ti mismo")
 
         attrs["calificador"] = request.user
-
-        if "calificador" in self.initial_data:
-            pass
         return attrs
 
     def create(self, validated_data):
@@ -45,7 +46,7 @@ class ReviewSerializer(serializers.ModelSerializer):
             calificado=validated_data["calificado"],
             defaults={
                 "calificacion": validated_data["calificacion"],
-                "descripcion": validated_data["descripcion"],
+                "descripcion": validated_data.get("descripcion", ""),
             },
         )
         return review

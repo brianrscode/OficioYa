@@ -3,6 +3,7 @@ from .models import Servicio, PrestadorServicios
 from .serializers import ServicioSerializer, PrestadorServiciosSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.exceptions import PermissionDenied
 from django.db.models import Q
 from .services.search_service import SearchService
 from .services.strategies.strategy_ciudad import StrategyCiudad
@@ -12,15 +13,31 @@ from apps.usuarios.models import Usuario
 
 
 class ServicioListCreateView(generics.ListCreateAPIView):
-    permission_classes = [permissions.AllowAny]
     queryset = Servicio.objects.all()
     serializer_class = ServicioSerializer
+
+    def get_permissions(self):
+        if self.request.method in permissions.SAFE_METHODS:
+            return [permissions.AllowAny()]
+        return [permissions.IsAdminUser()]
 
 
 class PrestadorServiciosListCreateView(generics.ListCreateAPIView):
     permission_classes = [permissions.AllowAny]
     queryset = PrestadorServicios.objects.all()
     serializer_class = PrestadorServiciosSerializer
+
+    def get_permissions(self):
+        if self.request.method in permissions.SAFE_METHODS:
+            return [permissions.AllowAny()]
+        return [permissions.IsAuthenticated()]
+
+    def perform_create(self, serializer):
+        if getattr(self.request.user, "rol", None) != "prestador":
+            raise PermissionDenied(
+                "Solo los usuarios con rol prestador pueden registrar servicios"
+            )
+        serializer.save(usuario=self.request.user)
 
 
 class BuscarPrestadoresView(APIView):

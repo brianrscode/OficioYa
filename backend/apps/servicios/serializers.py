@@ -18,3 +18,4 @@ class PrestadorServiciosSerializer(serializers.ModelSerializer):
     class Meta:
         model = PrestadorServicios
         fields = ["id", "usuario", "servicio", "servicio_id", "fecha_registro"]
+        read_only_fields = ["usuario", "fecha_registro"]
