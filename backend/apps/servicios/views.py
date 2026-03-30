@@ -23,7 +23,6 @@ class ServicioListCreateView(generics.ListCreateAPIView):
 
 
 class PrestadorServiciosListCreateView(generics.ListCreateAPIView):
-    permission_classes = [permissions.AllowAny]
     queryset = PrestadorServicios.objects.all()
     serializer_class = PrestadorServiciosSerializer
 
